@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment variables (CRITICAL - keeps your secrets safe!)
+.env
+
+# The large file causing your upload error
+ngrok
+
+# Logs (Render will generate its own)
+logs
+*.log
+npm-debug.log*
+
+# OS / Editor files (Not needed in the repo)
+.DS_Store
+Thumbs.db
+.vscode/

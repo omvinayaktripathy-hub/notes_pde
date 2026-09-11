@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Notes Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="modern-navbar">
+        <div class="container">
+            <a href="/teacher/dashboard" class="brand">
+                <span class="brand-icon">👨‍🏫</span>
+                <span>Teacher Dashboard</span>
+            </a>
+            <div class="nav-user">
+                <div class="user-badge"><span>👤</span><span><%= user.name %></span></div>
+                <a href="/logout" class="btn-logout">🚪 Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">📚</div>
+                <div class="stat-content"><h3><%= subjects.length %></h3><p>Your Subjects</p></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pink">❓</div>
+                <div class="stat-content"><h3><%= notifications.length %></h3><p>Pending Doubts</p></div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>➕ Add New Subject</h3>
+            <form method="POST" action="/teacher/subject">
+                <div class="form-group-modern">
+                    <label>📖 Subject Code</label>
+                    <input type="text" name="code" class="form-control-modern" placeholder="e.g. CS101" required>
+                </div>
+                <div class="form-group-modern">
+                    <label>📝 Subject Name</label>
+                    <input type="text" name="name" class="form-control-modern" placeholder="e.g. Mathematics" required>
+                </div>
+                <div class="form-group-modern">
+                    <label>👥 Sections (comma separated)</label>
+                    <input type="text" name="sections" class="form-control-modern" placeholder="e.g. A,B,C,D,E" required>
+                </div>
+                <button type="submit" class="btn-gradient">➕ Add Subject</button>
+            </form>
+        </div>
+
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2 class="section-title">
+                <span class="section-title-icon">📚</span>
+                Your Subjects
+            </h2>
+        </div>
+        <div class="grid-subjects">
+            <% subjects.forEach(subject => { %>
+                <div class="card-subject">
+                    <span class="subject-code"><%= subject.code %></span>
+                    <h5><%= subject.name %></h5>
+                    <p style="color: var(--gray); font-size: 0.85rem; margin-bottom: 1rem;">
+                        👥 Sections: <%= subject.sections.join(', ') %>
+                    </p>
+                    <form method="POST" action="/teacher/upload-note" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <input type="hidden" name="subjectId" value="<%= subject._id %>">
+                        <input type="text" name="title" class="form-control-modern" style="padding: 0.5rem; font-size: 0.85rem;" placeholder="Note title" required>
+                        <input type="text" name="description" class="form-control-modern" style="padding: 0.5rem; font-size: 0.85rem;" placeholder="Description">
+                        <select name="section" class="form-control-modern" style="padding: 0.5rem; font-size: 0.85rem;" required>
+                            <option value="">Select Section</option>
+                            <% subject.sections.forEach(section => { %>
+                                <option value="<%= section %>"><%= section %></option>
+                            <% }) %>
+                        </select>
+                        <input type="file" name="file" class="form-control-modern" style="padding: 0.5rem; font-size: 0.85rem;">
+                        <button type="submit" class="btn-success-custom" style="font-size: 0.875rem; padding: 0.5rem 1rem;">📤 Upload Note</button>
+                    </form>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2 class="section-title">
+                <span class="section-title-icon">❓</span>
+                Student Doubts
+            </h2>
+        </div>
+        <% if (notifications.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">✨</div>
+                <h3>No pending doubts</h3>
+                <p>All caught up!</p>
+            </div>
+        <% } else { %>
+            <% notifications.forEach(notification => { %>
+                <div class="notification-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div style="font-weight: 700;">👤 <%= notification.student.name %></div>
+                        <span class="badge-pending" style="background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600;">⏳ Pending</span>
+                    </div>
+                    <p style="color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">📖 <%= notification.subject.name %></p>
+                    <p style="color: var(--gray); line-height: 1.6; margin-bottom: 1rem;"><%= notification.message %></p>
+                    <form method="POST" action="/teacher/resolve-notification/<%= notification._id %>" style="display:inline;">
+                        <button type="submit" class="btn-success-custom" style="font-size: 0.85rem; padding: 0.5rem 1rem;">✓ Mark Resolved</button>
+                    </form>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login - Notes Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="teacher-login-page">
+        <div class="login-card-wrapper teacher-theme">
+            <a href="/" class="back-link">← Back to Home</a>
+            <div class="login-card">
+                <div class="login-logo">
+                    <div class="login-logo-icon">👨‍🏫</div>
+                </div>
+                <h2>Teacher Login</h2>
+                <p class="login-subtitle">Login to manage notes & doubts</p>
+
+                <% if (error) { %>
+                    <div class="alert-modern alert-error">
+                        <span>⚠️</span>
+                        <span><%= error %></span>
+                    </div>
+                <% } %>
+
+                <form method="POST" action="/login/teacher">
+                    <div class="form-group-modern">
+                        <label for="rollNumber">🎓 Teacher ID</label>
+                        <input type="text" id="rollNumber" name="rollNumber" class="form-control-modern" placeholder="Enter your teacher ID" required autofocus>
+                    </div>
+                    <div class="form-group-modern">
+                        <label for="password">🔒 Password</label>
+                        <input type="password" id="password" name="password" class="form-control-modern" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="btn-login">Login as Teacher →</button>
+                </form>
+
+                
+        </div>
+    </div>
+</body>
+</html>

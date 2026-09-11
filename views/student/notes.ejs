@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes - Notes Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="modern-navbar">
+        <div class="container">
+            <a href="/student/dashboard" class="brand">
+                <span class="brand-icon">←</span>
+                <span>Back to Dashboard</span>
+            </a>
+            <div class="nav-user">
+                <div class="user-badge"><span>👤</span><span><%= user.name %></span></div>
+                <a href="/logout" class="btn-logout">🚪 Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="section-title-icon">📝</span>
+                Available Notes
+            </h2>
+        </div>
+
+        <% if (notes.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No notes available for this subject</h3>
+                <p>Check back later or ask your teacher.</p>
+            </div>
+        <% } else { %>
+            <div class="grid-notes">
+                <% notes.forEach(note => { %>
+                    <div class="note-card">
+                        <h5>📄 <%= note.title %></h5>
+                        <p class="note-desc"><%= note.description %></p>
+                        <small class="note-date">📅 <%= new Date(note.createdAt).toLocaleDateString() %></small>
+                        <% if (note.fileUrl) { %>
+                            <a href="<%= note.fileUrl %>" class="btn-success-custom" style="font-size: 0.875rem; padding: 0.5rem 1rem;" download>⬇️ Download File</a>
+                        <% } %>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
