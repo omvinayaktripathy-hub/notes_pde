@@ -1,83 +1,28 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const User = require('../models/User');
-const Subject = require('../models/Subject');
-const Note = require('../models/Note');
-const Notification = require('../models/Notification');
+const upload = require('../config/multer');
+const teacherController = require('../controllers/teacherController');
+const { requireTeacher } = require('../middleware/auth');
 
-const upload = multer({ dest: 'public/uploads/' });
-
-// Auth middleware for teachers
-router.use(async (req, res, next) => {
-    if (!req.session.user || req.session.user.role !== 'teacher') {
-        return res.redirect('/login');
-    }
-    next();
-});
+// Auth guard for all teacher routes
+router.use(requireTeacher);
 
 // Teacher dashboard
-router.get('/dashboard', async (req, res) => {
-    try {
-        const subjects = await Subject.find({ teacher: req.session.user.id });
-        const notifications = await Notification.find({ status: 'pending' })
-            .populate('student')
-            .populate('subject');
-        
-        res.render('teacher/dashboard', {
-            user: req.session.user,
-            subjects: subjects,
-            notifications: notifications
-        });
-    } catch (error) {
-        res.status(500).send('Server error');
-    }
-});
+router.get('/dashboard', teacherController.getDashboard);
 
 // Add subject
-router.post('/subject', async (req, res) => {
-    try {
-        const { code, name, sections } = req.body;
-        const subject = new Subject({
-            code,
-            name,
-            sections: sections.split(',').map(s => s.trim()),
-            teacher: req.session.user.id
-        });
-        await subject.save();
-        res.redirect('/teacher/dashboard');
-    } catch (error) {
-        res.status(500).send('Server error');
-    }
-});
+router.post('/subject', teacherController.postSubject);
 
-// Upload note
-router.post('/upload-note', upload.single('file'), async (req, res) => {
-    try {
-        const { subjectId, title, description, section } = req.body;
-        const note = new Note({
-            subject: subjectId,
-            title,
-            description,
-            fileUrl: req.file ? '/uploads/' + req.file.filename : null,
-            section: section,
-            uploadedBy: req.session.user.id
-        });
-        await note.save();
-        res.redirect('/teacher/dashboard');
-    } catch (error) {
-        res.status(500).send('Server error');
-    }
-});
+// Upload note (with extension preservation and size limits)
+router.post('/upload-note', upload.single('file'), teacherController.postUploadNote);
 
-// Resolve notification
-router.post('/resolve-notification/:id', async (req, res) => {
-    try {
-        await Notification.findByIdAndUpdate(req.params.id, { status: 'resolved' });
-        res.redirect('/teacher/dashboard');
-    } catch (error) {
-        res.status(500).send('Server error');
-    }
-});
+// Resolve notification with teacher reply
+router.post('/resolve-notification/:id', teacherController.postResolveNotification);
+
+// Delete note
+router.post('/delete-note/:id', teacherController.postDeleteNote);
+
+// Publish student exam result
+router.post('/result', teacherController.postPublishResult);
 
 module.exports = router;

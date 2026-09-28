@@ -1,18 +1,21 @@
 # Dependencies
 node_modules/
 
-# Environment variables (CRITICAL - keeps your secrets safe!)
+# Environment variables
 .env
 
-# The large file causing your upload error
+# Ngrok & executables
 ngrok
+ngrok.exe
+*.exe
 
-# Logs (Render will generate its own)
+# Logs
 logs
 *.log
 npm-debug.log*
 
-# OS / Editor files (Not needed in the repo)
+# OS / Editor files
 .DS_Store
 Thumbs.db
 .vscode/
+.idea/

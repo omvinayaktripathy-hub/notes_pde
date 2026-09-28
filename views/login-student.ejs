@@ -1,44 +1,49 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Login - Notes Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Student Login - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="student-login-page">
-        <div class="login-card-wrapper student-theme">
-            <a href="/" class="back-link">← Back to Home</a>
-            <div class="login-card">
-                <div class="login-logo">
-                    <div class="login-logo-icon">👨‍🎓</div>
+    <div class="auth-page">
+        <div class="auth-card">
+            <a href="/" class="back-to-home">← Back to Home</a>
+
+            <div class="auth-header">
+                <div class="auth-icon-badge student">👨‍🎓</div>
+                <h2 class="auth-title">Student Portal</h2>
+                <p class="auth-subtitle">Sign in with your roll number to access your study materials</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
+                    <span>⚠️</span>
+                    <span><%= error %></span>
                 </div>
-                <h2>Student Login</h2>
-                <p class="login-subtitle">Login to access your notes</p>
+            <% } %>
 
-                <% if (error) { %>
-                    <div class="alert-modern alert-error">
-                        <span>⚠️</span>
-                        <span><%= error %></span>
-                    </div>
-                <% } %>
+            <form method="POST" action="/login/student">
+                <div class="form-group">
+                    <label class="form-label" for="rollNumber">Roll Number (e.g. S0001)</label>
+                    <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="Enter Roll Number (e.g. S0001)" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary-glow" style="margin-top: 1.5rem;">
+                    <span>Sign In to Student Dashboard</span> →
+                </button>
+            </form>
 
-                <form method="POST" action="/login/student">
-                    <div class="form-group-modern">
-                        <label for="rollNumber">🎓 Roll Number</label>
-                        <input type="text" id="rollNumber" name="rollNumber" class="form-control-modern" placeholder="Enter your roll number" required autofocus>
-                    </div>
-                    <div class="form-group-modern">
-                        <label for="password">🔒 Password</label>
-                        <input type="password" id="password" name="password" class="form-control-modern" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" class="btn-login">Login as Student →</button>
-                </form>
-
-                
+            <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200); text-align: center; font-size: 0.82rem; color: var(--gray-600);">
+                Are you a teacher? <a href="/login/teacher" style="color: var(--primary); font-weight: 700; text-decoration: none;">Faculty Login →</a>
+            </div>
         </div>
     </div>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

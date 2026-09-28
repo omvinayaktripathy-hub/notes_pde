@@ -1,110 +1,343 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - Notes Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Student Dashboard - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav class="modern-navbar">
-        <div class="container">
-            <a href="/student/dashboard" class="brand">
-                <span class="brand-icon">📚</span>
-                <span>Student Dashboard</span>
-            </a>
-            <div class="nav-user">
-                <div class="user-badge"><span>👤</span><span><%= user.name %></span></div>
-                <div class="user-badge"><span>📚</span><span>Section <%= user.section %></span></div>
-                <a href="/logout" class="btn-logout">🚪 Logout</a>
-            </div>
-        </div>
-    </nav>
+    <%- include('../partials/navbar') %>
+    <%- include('../partials/alerts') %>
 
     <div class="dashboard-container">
+        <!-- Stats Row -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon blue">📖</div>
-                <div class="stat-content"><h3><%= subjects.length %></h3><p>Your Subjects</p></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon pink">📝</div>
-                <div class="stat-content"><h3><%= notes.length %></h3><p>Available Notes</p></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon green">📚</div>
-                <div class="stat-content"><h3><%= user.section %></h3><p>Your Section</p></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon orange">👤</div>
-                <div class="stat-content"><h3><%= user.rollNumber %></h3><p>Roll Number</p></div>
-            </div>
-        </div>
-
-        <div class="section-header">
-            <h2 class="section-title">
-                <span class="section-title-icon">📚</span>
-                Your Subjects
-            </h2>
-        </div>
-        <div class="grid-subjects">
-            <% subjects.forEach(subject => { %>
-                <div class="card-subject">
-                    <span class="subject-code"><%= subject.code %></span>
-                    <h5><%= subject.name %></h5>
-                    <a href="/student/notes/<%= subject._id %>" class="btn-gradient" style="margin-top: 1rem; font-size: 0.875rem;">View Notes →</a>
+                <div class="stat-icon indigo">📚</div>
+                <div class="stat-content">
+                    <h3><%= stats.totalSubjects %></h3>
+                    <p>Enrolled Subjects</p>
                 </div>
-            <% }) %>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon sky">📝</div>
+                <div class="stat-content">
+                    <h3><%= stats.totalNotes %></h3>
+                    <p>Notes in Section <%= user.section %></p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: #ede9fe; color: #7c3aed;">📊</div>
+                <div class="stat-content">
+                    <h3><%= gpaPercentage ? `${gpaPercentage}%` : 'N/A' %></h3>
+                    <p>Academic Average</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber">⏳</div>
+                <div class="stat-content">
+                    <h3><%= stats.pendingDoubts %></h3>
+                    <p>Doubts Pending</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon emerald">💡</div>
+                <div class="stat-content">
+                    <h3><%= stats.resolvedDoubts %></h3>
+                    <p>Answers Received</p>
+                </div>
+            </div>
         </div>
 
-        <div class="section-header" style="margin-top: 3rem;">
-            <h2 class="section-title">
-                <span class="section-title-icon">📝</span>
-                Recent Notes
-            </h2>
-        </div>
-        <% if (notes.length === 0) { %>
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <h3>No notes available yet</h3>
-                <p>Check back later for updates.</p>
+        <!-- Dashboard Toolbar with Live Search and Navigation Tabs -->
+        <div class="dashboard-toolbar">
+            <div class="search-input-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="note-search" class="search-input" placeholder="Search notes by title, topic, or subject...">
             </div>
-        <% } else { %>
-            <div class="grid-notes">
-                <% notes.forEach(note => { %>
-                    <div class="note-card">
-                        <span class="subject-tag"><%= note.subject.name %></span>
-                        <h5><%= note.title %></h5>
-                        <p class="note-desc"><%= note.description %></p>
-                        <small class="note-date">📅 <%= new Date(note.createdAt).toLocaleDateString() %></small>
-                        <% if (note.fileUrl) { %>
-                            <a href="<%= note.fileUrl %>" class="btn-success-custom" style="font-size: 0.875rem; padding: 0.5rem 1rem;" download>⬇️ Download</a>
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="tab-notes">📖 All Notes (<%= notes.length %>)</button>
+                <button class="tab-btn" data-tab="tab-timetable">📅 Timetable</button>
+                <button class="tab-btn" data-tab="tab-results">📊 Results (<%= results.length %>)</button>
+                <button class="tab-btn" data-tab="tab-doubts">❓ My Doubts (<%= doubts.length %>)</button>
+                <button class="tab-btn" data-tab="tab-ask">✍️ Ask a Question</button>
+            </div>
+        </div>
+
+        <!-- TAB 1: ALL NOTES -->
+        <div id="tab-notes" class="tab-pane active">
+            <!-- Subject Filter Pills -->
+            <div class="subject-filter-bar">
+                <button class="subject-filter-pill active" data-subject-id="all">All Subjects</button>
+                <% subjects.forEach(subject => { %>
+                    <button class="subject-filter-pill" data-subject-id="<%= subject._id %>">
+                        <%= subject.code %>
+                    </button>
+                <% }) %>
+            </div>
+
+            <div id="no-search-results" class="empty-box" style="display: none;">
+                <div class="empty-box-icon">🔍</div>
+                <h4>No matching notes found</h4>
+                <p>Try searching with another keyword or subject code.</p>
+            </div>
+
+            <% if (notes.length === 0) { %>
+                <div class="empty-box">
+                    <div class="empty-box-icon">📭</div>
+                    <h4>No notes available yet for Section <%= user.section %></h4>
+                    <p>Your faculty will upload study materials soon. Check back shortly!</p>
+                </div>
+            <% } else { %>
+                <div class="notes-grid">
+                    <% notes.forEach(note => { %>
+                        <div class="note-item-card" 
+                             data-title="<%= note.title %>" 
+                             data-subject="<%= note.subject ? note.subject.name : '' %>"
+                             data-subject-id="<%= note.subject ? note.subject._id : '' %>"
+                             data-desc="<%= note.description || '' %>"
+                             data-section="<%= note.section %>">
+                            <div>
+                                <div class="note-header">
+                                    <span class="note-subject-pill">
+                                        <%= note.subject ? `${note.subject.code} - ${note.subject.name}` : 'General' %>
+                                    </span>
+                                    <span class="note-section-pill">Sec <%= note.section %></span>
+                                </div>
+                                <h3 class="note-title"><%= note.title %></h3>
+                                <p class="note-desc"><%= note.description || 'No additional summary provided.' %></p>
+                            </div>
+                            <div class="note-footer">
+                                <div>
+                                    <span>📅 <%= new Date(note.createdAt).toLocaleDateString() %></span>
+                                    <% if (note.fileType) { %>
+                                        <span style="margin-left: 0.4rem; font-weight: 700; color: var(--primary);">[<%= note.fileType %>]</span>
+                                    <% } %>
+                                </div>
+                                <% if (note.fileUrl) { %>
+                                    <a href="<%= note.fileUrl %>" class="btn-download-note" download="<%= note.originalName || '' %>">
+                                        <span>⬇️ Download</span>
+                                    </a>
+                                <% } else { %>
+                                    <span style="font-size: 0.75rem; color: var(--gray-400);">Text Note</span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+
+            <!-- Enrolled Subjects Quick Cards -->
+            <div style="margin-top: 3.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: var(--dark);">
+                    📚 Your Enrolled Courses
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;">
+                    <% subjects.forEach(subject => { %>
+                        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+                            <span class="note-subject-pill" style="margin-bottom: 0.5rem; display: inline-block;"><%= subject.code %></span>
+                            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--dark);"><%= subject.name %></h4>
+                            <a href="/student/notes/<%= subject._id %>" style="color: var(--primary); font-size: 0.82rem; font-weight: 700; text-decoration: none;">
+                                View Course Notes →
+                            </a>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TIMETABLE -->
+        <div id="tab-timetable" class="tab-pane">
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">
+                    📅 Weekly Timetable — Section <%= user.section %>
+                </h3>
+                <p style="color: var(--gray-600); font-size: 0.88rem;">
+                    Your schedule of lectures, labs, and faculty room assignments for Section <%= user.section %>.
+                </p>
+            </div>
+
+            <% if (timetables.length === 0) { %>
+                <div class="empty-box">
+                    <div class="empty-box-icon">📅</div>
+                    <h4>No timetable scheduled yet for Section <%= user.section %></h4>
+                    <p>The academic administration has not posted your section timetable yet.</p>
+                </div>
+            <% } else { %>
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <% timetables.forEach(t => { %>
+                        <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 0;">
+                            <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🗓️</span> <%= t.day %>
+                            </h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+                                <% t.slots.forEach(slot => { %>
+                                    <div style="background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                            <span style="font-weight: 800; font-size: 0.78rem; background: var(--primary-light); color: var(--primary-dark); padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">
+                                                Period <%= slot.period %>
+                                            </span>
+                                            <span style="font-size: 0.78rem; font-weight: 700; color: var(--gray-600);">
+                                                ⏱️ <%= slot.startTime %> - <%= slot.endTime %>
+                                            </span>
+                                        </div>
+                                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark); margin-bottom: 0.25rem;">
+                                            <%= slot.subject ? `${slot.subject.code}: ${slot.subject.name}` : 'Course' %>
+                                        </div>
+                                        <div style="font-size: 0.8rem; color: var(--gray-600);">
+                                            👨‍🏫 <%= slot.teacher ? slot.teacher.name : 'Faculty' %>
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: var(--primary); font-weight: 600; margin-top: 0.35rem;">
+                                            📍 <%= slot.room %>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- TAB 3: RESULTS -->
+        <div id="tab-results" class="tab-pane">
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">
+                    📊 Examination Performance & Grade Report
+                </h3>
+                <p style="color: var(--gray-600); font-size: 0.88rem;">
+                    Official semester scores, grades, and remarks published by academic faculty.
+                </p>
+            </div>
+
+            <% if (results.length === 0) { %>
+                <div class="empty-box">
+                    <div class="empty-box-icon">📊</div>
+                    <h4>No examination results published yet</h4>
+                    <p>Your grades will appear here as soon as your teachers publish them.</p>
+                </div>
+            <% } else { %>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <% results.forEach(r => { %>
+                        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+                                <span class="note-subject-pill"><%= r.subject ? r.subject.code : 'Course' %></span>
+                                <span class="user-role-badge <%= r.grade === 'F' ? 'admin' : 'student' %>" style="font-size: 0.85rem; padding: 0.25rem 0.75rem;">
+                                    Grade: <%= r.grade %>
+                                </span>
+                            </div>
+                            <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 0.25rem;">
+                                <%= r.subject ? r.subject.name : 'Subject' %>
+                            </h4>
+                            <div style="font-size: 0.82rem; color: var(--gray-600); margin-bottom: 1rem;">
+                                📝 <%= r.examName %>
+                            </div>
+
+                            <div style="background: var(--gray-50); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.15rem; color: var(--dark);">
+                                    <span>Score:</span>
+                                    <span><%= r.marksObtained %> / <%= r.maxMarks %></span>
+                                </div>
+                                <div style="width: 100%; height: 8px; background: var(--gray-200); border-radius: var(--radius-full); margin-top: 0.5rem; overflow: hidden;">
+                                    <div style="width: <%= Math.min(100, (r.marksObtained / r.maxMarks) * 100) %>%; height: 100%; background: <%= r.grade === 'F' ? 'var(--danger)' : 'var(--success)' %>;"></div>
+                                </div>
+                                <div style="font-size: 0.78rem; color: var(--gray-600); margin-top: 0.4rem; text-align: right;">
+                                    <%= ((r.marksObtained / r.maxMarks) * 100).toFixed(1) %>%
+                                </div>
+                            </div>
+
+                            <div style="font-size: 0.82rem; color: var(--dark-muted);">
+                                <strong>Faculty Remarks:</strong> <em>"<%= r.remarks %>"</em>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--gray-400); margin-top: 0.5rem;">
+                                Verified on <%= new Date(r.publishedAt).toLocaleDateString() %>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- TAB 4: MY DOUBTS & ANSWERS -->
+        <div id="tab-doubts" class="tab-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">❓ Your Doubt Inquiries & Teacher Answers</h3>
+            </div>
+
+            <% if (doubts.length === 0) { %>
+                <div class="empty-box">
+                    <div class="empty-box-icon">💡</div>
+                    <h4>You haven't asked any questions yet</h4>
+                    <p>Have a doubt in lecture? Use the "Ask a Question" tab to send inquiries to your professors.</p>
+                </div>
+            <% } else { %>
+                <% doubts.forEach(doubt => { %>
+                    <div class="doubt-card">
+                        <div class="doubt-header">
+                            <span class="note-subject-pill">
+                                <%= doubt.subject ? `${doubt.subject.code} - ${doubt.subject.name}` : 'General' %>
+                            </span>
+                            <span class="doubt-status-pill <%= doubt.status %>">
+                                <%= doubt.status === 'resolved' ? '✓ Answered' : '⏳ Pending Faculty Reply' %>
+                            </span>
+                        </div>
+                        <div class="doubt-question">
+                            <strong>Your Question:</strong> <%= doubt.message %>
+                        </div>
+                        <% if (doubt.status === 'resolved' && doubt.reply) { %>
+                            <div class="doubt-teacher-reply-box">
+                                <div style="font-weight: 700; color: var(--success-text); margin-bottom: 0.25rem;">
+                                    👨‍🏫 Faculty Response <%= doubt.resolvedBy ? `(${doubt.resolvedBy.name})` : '' %>:
+                                </div>
+                                <div style="color: var(--dark-muted);"><%= doubt.reply %></div>
+                                <% if (doubt.resolvedAt) { %>
+                                    <div style="font-size: 0.75rem; color: var(--gray-400); margin-top: 0.35rem;">
+                                        Answered on <%= new Date(doubt.resolvedAt).toLocaleDateString() %>
+                                    </div>
+                                <% } %>
+                            </div>
                         <% } %>
                     </div>
                 <% }) %>
-            </div>
-        <% } %>
+            <% } %>
+        </div>
 
-        <div class="form-section" style="margin-top: 3rem;">
-            <h3>❓ Ask a Doubt</h3>
-            <form method="POST" action="/student/notification">
-                <div class="form-group-modern">
-                    <label>📖 Subject</label>
-                    <select name="subjectId" class="form-control-modern" required>
-                        <option value="">-- Select a Subject --</option>
-                        <% subjects.forEach(subject => { %>
-                            <option value="<%= subject._id %>"><%= subject.code %> - <%= subject.name %></option>
-                        <% }) %>
-                    </select>
+        <!-- TAB 5: ASK A DOUBT -->
+        <div id="tab-ask" class="tab-pane">
+            <div class="glass-panel" style="max-width: 700px; margin: 0 auto;">
+                <div class="panel-header">
+                    <span style="font-size: 1.5rem;">✍️</span>
+                    <h3 class="panel-title">Ask a Doubt to Your Teacher</h3>
                 </div>
-                <div class="form-group-modern">
-                    <label>💬 Your Question</label>
-                    <textarea name="message" class="form-control-modern" rows="4" placeholder="Describe your doubt in detail..." required></textarea>
-                </div>
-                <button type="submit" class="btn-warning-custom">📤 Send to Teacher</button>
-            </form>
+                <p style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    Submit your academic questions. Your teacher will be notified and their response will appear in your "My Doubts" tab.
+                </p>
+
+                <form method="POST" action="/student/notification">
+                    <div class="form-group">
+                        <label class="form-label">Select Subject</label>
+                        <select name="subjectId" class="form-control" required>
+                            <option value="">-- Choose enrolled subject --</option>
+                            <% subjects.forEach(subject => { %>
+                                <option value="<%= subject._id %>"><%= subject.code %> — <%= subject.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Your Question / Doubt Details</label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="Explain what concept or topic you need clarification with..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary-glow" style="margin-top: 1rem;">
+                        <span>📤 Submit Question to Teacher</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

@@ -1,37 +1,59 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes Platform - Welcome</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>NotesHub - Collaborative Learning Platform</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="welcome-page">
-        <div class="welcome-container">
-            <div class="welcome-logo">📚</div>
-            <h1>Welcome to Notes Platform</h1>
-            <p class="welcome-subtitle">Choose how you want to continue</p>
+    <%- include('partials/navbar') %>
+    <%- include('partials/alerts') %>
 
-            <div class="role-cards">
+    <section class="welcome-hero">
+        <div class="welcome-content-box">
+            <div class="hero-badge">
+                <span>✨</span> The Smart Campus Learning & Management Hub
+            </div>
+            <h1 class="hero-title">Academic Notes, Timetables & Results, Simplified.</h1>
+            <p class="hero-subtitle">
+                Access curated lecture materials, weekly timetables, exam results, and doubt resolution across all campus sections.
+            </p>
+
+            <div class="portal-selection-grid" style="max-width: 1050px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                 <!-- Student Card -->
-                <a href="/login/student" class="role-card student-card">
-                    <div class="role-card-icon">👨‍🎓</div>
-                    <h2>Student</h2>
-                    <p>Access notes, download materials, ask doubts</p>
-                    <span class="role-btn">Login as Student →</span>
+                <a href="/login/student" class="portal-card student-card">
+                    <div class="portal-icon-wrap">👨‍🎓</div>
+                    <h3>Student Portal</h3>
+                    <p>Access section notes, download course files, track your weekly timetable, and check semester results.</p>
+                    <div class="portal-action-btn">
+                        <span>Enter as Student</span> →
+                    </div>
                 </a>
 
                 <!-- Teacher Card -->
-                <a href="/login/teacher" class="role-card teacher-card">
-                    <div class="role-card-icon">👨‍🏫</div>
-                    <h2>Teacher</h2>
-                    <p>Upload notes, manage subjects, resolve doubts</p>
-                    <span class="role-btn">Login as Teacher →</span>
+                <a href="/login/teacher" class="portal-card teacher-card">
+                    <div class="portal-icon-wrap">👨‍🏫</div>
+                    <h3>Faculty Portal</h3>
+                    <p>Upload lecture notes, check your teaching schedule, publish exam results, and resolve student doubts.</p>
+                    <div class="portal-action-btn">
+                        <span>Enter as Faculty</span> →
+                    </div>
+                </a>
+
+                <!-- Admin Card -->
+                <a href="/login/admin" class="portal-card admin-card" style="border-top: 4px solid var(--danger);">
+                    <div class="portal-icon-wrap" style="background: rgba(239, 68, 68, 0.15);">🛡️</div>
+                    <h3>Admin Console</h3>
+                    <p>Master platform control to manage students, teachers, courses, timetables, and publish academic records.</p>
+                    <div class="portal-action-btn" style="color: #f87171;">
+                        <span>Master Access</span> →
+                    </div>
                 </a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

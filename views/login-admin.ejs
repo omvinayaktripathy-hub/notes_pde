@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Portal - NotesHub</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card" style="border-top: 4px solid var(--danger);">
+            <a href="/" class="back-to-home">← Back to Home</a>
+
+            <div class="auth-header">
+                <div class="auth-icon-badge" style="background: #fee2e2; color: #dc2626;">🛡️</div>
+                <h2 class="auth-title">Super Admin Portal</h2>
+                <p class="auth-subtitle">Full master control over students, teachers, courses, timetables & results</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
+                    <span>⚠️</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+            <form method="POST" action="/login/admin">
+                <div class="form-group">
+                    <label class="form-label" for="rollNumber">Admin ID</label>
+                    <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="Enter Admin ID (e.g. ADMIN01)" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Security Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary-glow" style="margin-top: 1.5rem; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                    <span>Authenticate as Administrator</span> →
+                </button>
+            </form>
+
+            <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200); text-align: center; font-size: 0.82rem; color: var(--gray-600);">
+                Regular campus member? <a href="/login/student" style="color: var(--primary); font-weight: 700; text-decoration: none;">Student Portal</a> • <a href="/login/teacher" style="color: var(--primary); font-weight: 700; text-decoration: none;">Teacher Portal</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

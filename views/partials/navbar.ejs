@@ -1,0 +1,32 @@
+<nav class="modern-navbar">
+    <div class="container">
+        <a href="<%= currentUser ? (currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="brand">
+            <span class="brand-logo-icon">📚</span>
+            <span class="brand-text">Notes<span class="brand-highlight">Hub</span></span>
+        </a>
+
+        <% if (currentUser) { %>
+            <div class="nav-user">
+                <div class="user-pill">
+                    <span class="user-role-badge <%= currentUser.role %>">
+                        <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Teacher' : '👨‍🎓 Student') %>
+                    </span>
+                    <span class="user-name"><%= currentUser.name %></span>
+                    <% if (currentUser.section && currentUser.section !== 'All') { %>
+                        <span class="section-tag">Sec <%= currentUser.section %></span>
+                    <% } %>
+                    <span class="roll-tag"><%= currentUser.rollNumber %></span>
+                </div>
+                <a href="/logout" class="btn-logout" title="Sign out of your account">
+                    <span>Logout</span> 🚪
+                </a>
+            </div>
+        <% } else { %>
+            <div class="nav-links">
+                <a href="/login/student" class="nav-link">Student</a>
+                <a href="/login/teacher" class="nav-link">Teacher</a>
+                <a href="/login/admin" class="nav-link" style="border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">Admin Portal</a>
+            </div>
+        <% } %>
+    </div>
+</nav>

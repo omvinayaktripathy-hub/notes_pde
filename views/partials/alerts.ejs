@@ -1,0 +1,15 @@
+<% if (typeof successMsg !== 'undefined' && successMsg) { %>
+    <div class="toast-alert toast-success" id="toast-alert">
+        <span class="toast-icon">✅</span>
+        <span class="toast-text"><%= successMsg %></span>
+        <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+    </div>
+<% } %>
+
+<% if (typeof errorMsg !== 'undefined' && errorMsg) { %>
+    <div class="toast-alert toast-error" id="toast-alert">
+        <span class="toast-icon">⚠️</span>
+        <span class="toast-text"><%= errorMsg %></span>
+        <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+    </div>
+<% } %>

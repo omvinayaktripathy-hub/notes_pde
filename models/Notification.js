@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
     student: {
@@ -19,6 +19,17 @@ const NotificationSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'resolved'],
         default: 'pending'
+    },
+    reply: {
+        type: String,
+        default: ''
+    },
+    resolvedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    resolvedAt: {
+        type: Date
     },
     createdAt: {
         type: Date,

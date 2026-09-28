@@ -1,54 +1,68 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes - Notes Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title><%= subject ? subject.name : 'Subject Notes' %> - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav class="modern-navbar">
-        <div class="container">
-            <a href="/student/dashboard" class="brand">
-                <span class="brand-icon">←</span>
-                <span>Back to Dashboard</span>
-            </a>
-            <div class="nav-user">
-                <div class="user-badge"><span>👤</span><span><%= user.name %></span></div>
-                <a href="/logout" class="btn-logout">🚪 Logout</a>
-            </div>
-        </div>
-    </nav>
+    <%- include('../partials/navbar') %>
+    <%- include('../partials/alerts') %>
 
     <div class="dashboard-container">
-        <div class="section-header">
-            <h2 class="section-title">
-                <span class="section-title-icon">📝</span>
-                Available Notes
-            </h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <a href="/student/dashboard" class="back-to-home" style="margin-bottom: 0.5rem;">← Back to Dashboard</a>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--dark);">
+                    📚 <%= subject ? `${subject.code}: ${subject.name}` : 'Subject Notes' %>
+                </h1>
+                <p style="color: var(--gray-600); font-size: 0.9rem;">
+                    Course notes and materials filtered for Section <strong><%= user.section %></strong>
+                </p>
+            </div>
         </div>
 
         <% if (notes.length === 0) { %>
-            <div class="empty-state">
-                <div class="empty-state-icon">📭</div>
-                <h3>No notes available for this subject</h3>
-                <p>Check back later or ask your teacher.</p>
+            <div class="empty-box">
+                <div class="empty-box-icon">📭</div>
+                <h4>No materials uploaded yet for this subject</h4>
+                <p>Check back later or ask your professor in the doubts section.</p>
+                <a href="/student/dashboard#tab-ask" class="btn-primary-glow" style="display: inline-flex; width: auto; margin-top: 1.5rem;">
+                    Ask Question to Teacher →
+                </a>
             </div>
         <% } else { %>
-            <div class="grid-notes">
+            <div class="notes-grid">
                 <% notes.forEach(note => { %>
-                    <div class="note-card">
-                        <h5>📄 <%= note.title %></h5>
-                        <p class="note-desc"><%= note.description %></p>
-                        <small class="note-date">📅 <%= new Date(note.createdAt).toLocaleDateString() %></small>
-                        <% if (note.fileUrl) { %>
-                            <a href="<%= note.fileUrl %>" class="btn-success-custom" style="font-size: 0.875rem; padding: 0.5rem 1rem;" download>⬇️ Download File</a>
-                        <% } %>
+                    <div class="note-item-card">
+                        <div>
+                            <div class="note-header">
+                                <span class="note-subject-pill"><%= subject ? subject.code : 'Note' %></span>
+                                <span class="note-section-pill">Sec <%= note.section %></span>
+                            </div>
+                            <h3 class="note-title"><%= note.title %></h3>
+                            <p class="note-desc"><%= note.description || 'No detailed description.' %></p>
+                        </div>
+                        <div class="note-footer">
+                            <div>
+                                <span>📅 <%= new Date(note.createdAt).toLocaleDateString() %></span>
+                                <% if (note.fileType) { %>
+                                    <span style="margin-left: 0.4rem; font-weight: 700; color: var(--primary);">[<%= note.fileType %>]</span>
+                                <% } %>
+                            </div>
+                            <% if (note.fileUrl) { %>
+                                <a href="<%= note.fileUrl %>" class="btn-download-note" download="<%= note.originalName || '' %>">
+                                    <span>⬇️ Download</span>
+                                </a>
+                            <% } %>
+                        </div>
                     </div>
                 <% }) %>
             </div>
         <% } %>
     </div>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

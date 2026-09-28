@@ -1,4 +1,4 @@
-﻿const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const NoteSchema = new mongoose.Schema({
     subject: {
@@ -8,10 +8,25 @@ const NoteSchema = new mongoose.Schema({
     },
     title: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
-    description: String,
-    fileUrl: String,
+    description: {
+        type: String,
+        trim: true
+    },
+    fileUrl: {
+        type: String
+    },
+    originalName: {
+        type: String
+    },
+    fileSize: {
+        type: Number
+    },
+    fileType: {
+        type: String
+    },
     section: {
         type: String,
         required: true
