@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 
-// Welcome / landing page
+// Welcome / landing page (Strictly for students & public campus learning)
 router.get('/', authController.getHome);
 
-// Login pages
-router.get('/login', (req, res) => res.redirect('/'));
+// Dedicated Portal Login Pages
+router.get('/login', (req, res) => res.redirect('/login/student'));
 router.get('/login/student', authController.getStudentLogin);
 router.get('/login/teacher', authController.getTeacherLogin);
+router.get('/faculty', (req, res) => res.redirect('/login/teacher'));
 router.get('/login/admin', authController.getAdminLogin);
 
 // Login handlers

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotesHub - Collaborative Learning Platform</title>
+    <title>NotesHub - Student Learning Platform</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -13,43 +13,44 @@
     <section class="welcome-hero">
         <div class="welcome-content-box">
             <div class="hero-badge">
-                <span>✨</span> The Smart Campus Learning & Management Hub
+                <span>✨</span> Student Learning & Academic Resource Hub
             </div>
             <h1 class="hero-title">Academic Notes, Timetables & Results, Simplified.</h1>
             <p class="hero-subtitle">
-                Access curated lecture materials, weekly timetables, exam results, and doubt resolution across all campus sections.
+                Access curated lecture materials, weekly timetables, exam results, and doubt resolution customized for your academic section.
             </p>
 
-            <div class="portal-selection-grid" style="max-width: 1050px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                <!-- Student Card -->
-                <a href="/login/student" class="portal-card student-card">
-                    <div class="portal-icon-wrap">👨‍🎓</div>
-                    <h3>Student Portal</h3>
-                    <p>Access section notes, download course files, track your weekly timetable, and check semester results.</p>
-                    <div class="portal-action-btn">
-                        <span>Enter as Student</span> →
-                    </div>
+            <div style="margin-bottom: 3.5rem;">
+                <a href="/login/student" class="btn-primary-glow" style="display: inline-flex; width: auto; font-size: 1.1rem; padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px;">
+                    <span>Enter Student Portal</span> →
                 </a>
+            </div>
 
-                <!-- Teacher Card -->
-                <a href="/login/teacher" class="portal-card teacher-card">
-                    <div class="portal-icon-wrap">👨‍🏫</div>
-                    <h3>Faculty Portal</h3>
-                    <p>Upload lecture notes, check your teaching schedule, publish exam results, and resolve student doubts.</p>
-                    <div class="portal-action-btn">
-                        <span>Enter as Faculty</span> →
-                    </div>
-                </a>
+            <!-- Student Feature Highlights (Not Portals!) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; text-align: left;">
+                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📖</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Course Notes</h3>
+                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
+                        Download verified study guides, lecture slides, and PDF resources directly from your faculty instructors.
+                    </p>
+                </div>
 
-                <!-- Admin Card -->
-                <a href="/login/admin" class="portal-card admin-card" style="border-top: 4px solid var(--danger);">
-                    <div class="portal-icon-wrap" style="background: rgba(239, 68, 68, 0.15);">🛡️</div>
-                    <h3>Admin Console</h3>
-                    <p>Master platform control to manage students, teachers, courses, timetables, and publish academic records.</p>
-                    <div class="portal-action-btn" style="color: #f87171;">
-                        <span>Master Access</span> →
-                    </div>
-                </a>
+                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📅</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Weekly Timetable</h3>
+                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
+                        Keep track of your section's daily class timings, periods, lecture halls, and assigned faculty members.
+                    </p>
+                </div>
+
+                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📊</div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Exam Results</h3>
+                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
+                        Check your semester examination grades, subject scores, and faculty evaluation remarks in real time.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
