@@ -3,43 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Portal - NotesHub</title>
+    <title>Master System Console - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-card" style="border-top: 4px solid var(--danger);">
-            <a href="/" class="back-to-home">← Back to Home</a>
+    <div class="admin-page-wrap">
+        <div class="admin-terminal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <a href="/" style="color: #94a3b8; font-size: 0.82rem; font-family: var(--font-mono); text-decoration: none; display: inline-flex; align-items: center; gap: 0.35rem;">
+                    ← [ESCAPE_TO_HOME]
+                </a>
+                <div class="admin-status-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>ROOT_SYS_ONLINE</span>
+                </div>
+            </div>
 
-            <div class="auth-header">
-                <div class="auth-icon-badge" style="background: #fee2e2; color: #dc2626;">🛡️</div>
-                <h2 class="auth-title">Super Admin Portal</h2>
-                <p class="auth-subtitle">Full master control over students, teachers, courses, timetables & results</p>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 2.8rem; margin-bottom: 0.5rem; filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.6));">🛡️</div>
+                <h2 style="font-size: 1.65rem; font-weight: 800; color: #ffffff; font-family: var(--font-mono); letter-spacing: -0.02em;">
+                    MASTER_CONSOLE
+                </h2>
+                <p style="color: #94a3b8; font-size: 0.82rem; font-family: var(--font-mono); margin-top: 0.35rem;">
+                    [LEVEL_5_CLEARANCE_REQUIRED]
+                </p>
             </div>
 
             <% if (error) { %>
-                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
+                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.5rem; background: rgba(220, 38, 38, 0.2); border-color: #ef4444; color: #fca5a5; font-family: var(--font-mono); font-size: 0.82rem;">
                     <span>⚠️</span>
-                    <span><%= error %></span>
+                    <span>ACCESS_DENIED: <%= error %></span>
                 </div>
             <% } %>
 
-            <form method="POST" action="/login/admin">
+            <form method="POST" action="/login/admin" id="admin-form">
                 <div class="form-group">
-                    <label class="form-label" for="rollNumber">Admin ID</label>
-                    <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="Enter Admin ID (e.g. ADMIN01)" required autofocus>
+                    <label class="form-label" for="rollNumber" style="color: #cbd5e1; font-family: var(--font-mono); font-size: 0.8rem;">
+                        IDENTIFIER &gt;
+                    </label>
+                    <input type="text" id="rollNumber" name="rollNumber" class="form-control admin-input" placeholder="ADMIN01" required autofocus>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label" for="password">Security Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                    <label class="form-label" for="password" style="color: #cbd5e1; font-family: var(--font-mono); font-size: 0.8rem;">
+                        PASSPHRASE &gt;
+                    </label>
+                    <input type="password" id="password" name="password" class="form-control admin-input" placeholder="••••••••••••" required>
                 </div>
-                <button type="submit" class="btn-primary-glow" style="margin-top: 1.5rem; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
-                    <span>Authenticate as Administrator</span> →
+
+                <button type="submit" class="btn-admin-submit" style="margin-top: 1.5rem;">
+                    INITIALIZE COMMAND SESSION &gt;&gt;
                 </button>
             </form>
 
-            <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200); text-align: center; font-size: 0.82rem; color: var(--gray-600);">
-                Regular campus member? <a href="/login/student" style="color: var(--primary); font-weight: 700; text-decoration: none;">Student Portal</a> • <a href="/login/teacher" style="color: var(--primary); font-weight: 700; text-decoration: none;">Teacher Portal</a>
+            <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1rem;">
+                <button type="button" class="quick-fill-chip dark" onclick="document.getElementById('rollNumber').value='ADMIN01'; document.getElementById('password').value='admin123';" style="border-color: rgba(239, 68, 68, 0.4); color: #fca5a5; font-family: var(--font-mono);">
+                    ⚡ Quick Demo Fill (ADMIN01)
+                </button>
+                <div style="font-size: 0.75rem; color: #64748b; font-family: var(--font-mono);">
+                    TLS 1.3 ENCRYPTED
+                </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; font-size: 0.72rem; color: #64748b; text-align: center; font-family: var(--font-mono);">
+                ⚠️ WARNING: All administrator commands, queries, and IP actions are audited in system audit logs.
             </div>
         </div>
     </div>

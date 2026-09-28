@@ -3,43 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Login - NotesHub</title>
+    <title>Faculty Portal Login - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-card">
-            <a href="/" class="back-to-home">← Back to Home</a>
+    <div class="teacher-page-wrap">
+        <div class="teacher-portal-box">
+            <!-- Left Academic Faculty Hero Side -->
+            <div class="teacher-hero-side">
+                <div>
+                    <a href="/" style="color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 2rem;">
+                        ← Campus Portal Home
+                    </a>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👨‍🏫</div>
+                    <h2 style="font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem;">
+                        Academic Faculty Portal
+                    </h2>
+                    <p style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6;">
+                        Secure instructional console for university professors to distribute study materials, verify schedules, grade assessments, and guide students.
+                    </p>
 
-            <div class="auth-header">
-                <div class="auth-icon-badge teacher">👨‍🏫</div>
-                <h2 class="auth-title">Faculty Portal</h2>
-                <p class="auth-subtitle">Sign in to manage subjects, upload notes, and resolve student doubts</p>
+                    <div style="margin: 2rem 0; display: flex; flex-direction: column; gap: 0.85rem;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: #e2e8f0;">
+                            <span style="background: rgba(168, 85, 247, 0.3); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.8rem;">📤</span>
+                            <span>Upload Lecture Notes (PDF, DOCX, Code)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: #e2e8f0;">
+                            <span style="background: rgba(168, 85, 247, 0.3); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.8rem;">📅</span>
+                            <span>View Teaching Timetable & Classroom Slots</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: #e2e8f0;">
+                            <span style="background: rgba(168, 85, 247, 0.3); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.8rem;">📊</span>
+                            <span>Publish Examination Results & Grades</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: #e2e8f0;">
+                            <span style="background: rgba(168, 85, 247, 0.3); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.8rem;">💬</span>
+                            <span>Review & Answer Student Academic Inquiries</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1.5rem; font-size: 0.82rem; color: #94a3b8;">
+                    🔒 <em>Authorized Academic Faculty Only</em>
+                </div>
             </div>
 
-            <% if (error) { %>
-                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
-                    <span>⚠️</span>
-                    <span><%= error %></span>
+            <!-- Right Faculty Login Form Side -->
+            <div class="teacher-form-side">
+                <div style="margin-bottom: 1.75rem;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #a855f7; text-transform: uppercase; letter-spacing: 0.05em;">Instructor Verification</span>
+                    <h3 style="font-size: 1.65rem; font-weight: 800; color: white; margin-top: 0.25rem;">Faculty Sign In</h3>
+                    <p style="color: #94a3b8; font-size: 0.88rem;">Authenticate with your unique Faculty ID credentials.</p>
                 </div>
-            <% } %>
 
-            <form method="POST" action="/login/teacher">
-                <div class="form-group">
-                    <label class="form-label" for="rollNumber">Faculty ID (e.g. T001)</label>
-                    <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="Enter Faculty ID (e.g. T001)" required autofocus>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-primary-glow" style="margin-top: 1.5rem; background: var(--gradient-teacher);">
-                    <span>Sign In to Faculty Portal</span> →
-                </button>
-            </form>
+                <% if (error) { %>
+                    <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
+                        <span>⚠️</span>
+                        <span><%= error %></span>
+                    </div>
+                <% } %>
 
-            <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200); text-align: center; font-size: 0.82rem; color: var(--gray-600);">
-                Are you a student? <a href="/login/student" style="color: var(--primary); font-weight: 700; text-decoration: none;">Student Login →</a>
+                <form method="POST" action="/login/teacher" id="teacher-form">
+                    <div class="form-group">
+                        <label class="form-label" for="rollNumber" style="color: #cbd5e1;">🎓 Faculty ID</label>
+                        <input type="text" id="rollNumber" name="rollNumber" class="form-control teacher-input" placeholder="e.g. T001" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password" style="color: #cbd5e1;">🔒 Security Password</label>
+                        <input type="password" id="password" name="password" class="form-control teacher-input" placeholder="Enter faculty password" required>
+                    </div>
+
+                    <button type="submit" class="btn-teacher-submit">
+                        Access Faculty Control Center →
+                    </button>
+                </form>
+
+                <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <button type="button" class="quick-fill-chip dark" onclick="document.getElementById('rollNumber').value='T001'; document.getElementById('password').value='teacher123';">
+                        ⚡ Quick Demo Fill (T001)
+                    </button>
+                    <a href="/login/student" style="font-size: 0.82rem; color: #a855f7; font-weight: 700; text-decoration: none;">
+                        Student Portal →
+                    </a>
+                </div>
             </div>
         </div>
     </div>

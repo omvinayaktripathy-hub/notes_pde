@@ -1003,3 +1003,294 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   DISTINCT LOGIN EXPERIENCES: STUDENT vs TEACHER vs ADMIN
+   ========================================================================== */
+
+/* --- 1. STUDENT LOGIN EXPERIENCE (Electric Blue & Learning Hub) --- */
+.student-page-wrap {
+    min-height: 100vh;
+    background: radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(37, 99, 235, 0.15) 0%, transparent 40%),
+                #f0f9ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+}
+
+.student-portal-box {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    max-width: 950px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.student-hero-side {
+    background: linear-gradient(145deg, #0284c7 0%, #0369a1 60%, #1e3a8a 100%);
+    padding: 3rem 2.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.student-pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+.student-chip {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.student-form-side {
+    padding: 3rem 2.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.btn-student-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 20px -5px rgba(2, 132, 199, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-student-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 25px -4px rgba(2, 132, 199, 0.5);
+}
+
+/* --- 2. TEACHER LOGIN EXPERIENCE (Regal Executive Faculty Chamber) --- */
+.teacher-page-wrap {
+    min-height: 100vh;
+    background: radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.2) 0%, transparent 45%),
+                #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+}
+
+.teacher-portal-box {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    max-width: 950px;
+    width: 100%;
+    background: rgba(30, 27, 75, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(168, 85, 247, 0.25);
+}
+
+.teacher-hero-side {
+    background: linear-gradient(145deg, #4c1d95 0%, #581c87 50%, #312e81 100%);
+    padding: 3rem 2.5rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.teacher-form-side {
+    padding: 3rem 2.75rem;
+    color: white;
+    background: rgba(15, 23, 42, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.teacher-input {
+    background: rgba(30, 41, 59, 0.7) !important;
+    border: 1.5px solid rgba(168, 85, 247, 0.3) !important;
+    color: white !important;
+}
+
+.teacher-input:focus {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.35) !important;
+}
+
+.btn-teacher-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.5);
+    transition: all 0.2s ease;
+}
+
+.btn-teacher-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -4px rgba(124, 58, 237, 0.65);
+}
+
+/* --- 3. ADMIN LOGIN EXPERIENCE (Cyber Security Command Console) --- */
+.admin-page-wrap {
+    min-height: 100vh;
+    background: #030712;
+    background-image: 
+        radial-gradient(rgba(239, 68, 68, 0.15) 1px, transparent 0),
+        radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.25) 0%, transparent 60%);
+    background-size: 32px 32px, 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+}
+
+.admin-terminal-box {
+    max-width: 500px;
+    width: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 18px;
+    padding: 2.5rem;
+    box-shadow: 0 0 50px rgba(220, 38, 38, 0.25), 0 20px 40px rgba(0,0,0,0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-terminal-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ef4444, #f97316, #ef4444);
+}
+
+.admin-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fca5a5;
+    font-family: var(--font-mono);
+    margin-bottom: 1.25rem;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 10px #ef4444;
+}
+
+.admin-input {
+    background: #090d16 !important;
+    border: 1.5px solid rgba(239, 68, 68, 0.3) !important;
+    color: #fecaca !important;
+    font-family: var(--font-mono) !important;
+}
+
+.admin-input:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+}
+
+.btn-admin-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    color: white;
+    border: 1px solid #ef4444;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.5);
+    transition: all 0.2s ease;
+}
+
+.btn-admin-submit:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: 0 12px 30px -4px rgba(239, 68, 68, 0.7);
+    transform: translateY(-2px);
+}
+
+.quick-fill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.75rem;
+}
+
+.quick-fill-chip:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+}
+
+.quick-fill-chip.dark {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+}
+
+.quick-fill-chip.dark:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 820px) {
+    .student-portal-box, .teacher-portal-box {
+        grid-template-columns: 1fr;
+    }
+    .student-hero-side, .teacher-hero-side {
+        padding: 2rem;
+    }
+    .student-form-side, .teacher-form-side {
+        padding: 2rem;
+    }
+}

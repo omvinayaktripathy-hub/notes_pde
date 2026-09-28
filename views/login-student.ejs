@@ -3,43 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Login - NotesHub</title>
+    <title>Student Portal Login - NotesHub</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="auth-page">
-        <div class="auth-card">
-            <a href="/" class="back-to-home">← Back to Home</a>
+    <div class="student-page-wrap">
+        <div class="student-portal-box">
+            <!-- Left Hero Learning Side -->
+            <div class="student-hero-side">
+                <div>
+                    <a href="/" style="color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 2rem;">
+                        ← Back to Campus Home
+                    </a>
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👨‍🎓</div>
+                    <h2 style="font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem;">
+                        Student Learning Portal
+                    </h2>
+                    <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; line-height: 1.6;">
+                        Your personalized academic gateway to lecture notes, weekly timetables, examination grades, and direct professor doubt clearance.
+                    </p>
 
-            <div class="auth-header">
-                <div class="auth-icon-badge student">👨‍🎓</div>
-                <h2 class="auth-title">Student Portal</h2>
-                <p class="auth-subtitle">Sign in with your roll number to access your study materials</p>
+                    <div class="student-pill-list">
+                        <span class="student-chip">📥 Download Notes</span>
+                        <span class="student-chip">📅 Weekly Timetable</span>
+                        <span class="student-chip">📊 Semester Results</span>
+                        <span class="student-chip">💡 Ask Questions</span>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.5rem; font-size: 0.82rem; color: rgba(255,255,255,0.75);">
+                    💡 <em>Tip: Access materials specifically filtered for your academic section.</em>
+                </div>
             </div>
 
-            <% if (error) { %>
-                <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
-                    <span>⚠️</span>
-                    <span><%= error %></span>
+            <!-- Right Login Form Side -->
+            <div class="student-form-side">
+                <div style="margin-bottom: 1.75rem;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #0284c7; text-transform: uppercase; letter-spacing: 0.05em;">Student Authentication</span>
+                    <h3 style="font-size: 1.65rem; font-weight: 800; color: var(--dark); margin-top: 0.25rem;">Welcome back!</h3>
+                    <p style="color: var(--gray-600); font-size: 0.88rem;">Sign in with your assigned college Roll Number.</p>
                 </div>
-            <% } %>
 
-            <form method="POST" action="/login/student">
-                <div class="form-group">
-                    <label class="form-label" for="rollNumber">Roll Number (e.g. S0001)</label>
-                    <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="Enter Roll Number (e.g. S0001)" required autofocus>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-primary-glow" style="margin-top: 1.5rem;">
-                    <span>Sign In to Student Dashboard</span> →
-                </button>
-            </form>
+                <% if (error) { %>
+                    <div class="toast-alert toast-error" style="position: static; margin-bottom: 1.25rem;">
+                        <span>⚠️</span>
+                        <span><%= error %></span>
+                    </div>
+                <% } %>
 
-            <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--gray-200); text-align: center; font-size: 0.82rem; color: var(--gray-600);">
-                Are you a teacher? <a href="/login/teacher" style="color: var(--primary); font-weight: 700; text-decoration: none;">Faculty Login →</a>
+                <form method="POST" action="/login/student" id="student-form">
+                    <div class="form-group">
+                        <label class="form-label" for="rollNumber">🎓 Student Roll Number</label>
+                        <input type="text" id="rollNumber" name="rollNumber" class="form-control" placeholder="e.g. S0001" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">🔒 Security Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter student password" required>
+                    </div>
+
+                    <button type="submit" class="btn-student-submit">
+                        Enter Student Dashboard →
+                    </button>
+                </form>
+
+                <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                    <button type="button" class="quick-fill-chip" onclick="document.getElementById('rollNumber').value='S0001'; document.getElementById('password').value='student123';">
+                        ⚡ Quick Demo Fill (S0001)
+                    </button>
+                    <a href="/login/teacher" style="font-size: 0.82rem; color: var(--primary); font-weight: 700; text-decoration: none;">
+                        Faculty Login →
+                    </a>
+                </div>
             </div>
         </div>
     </div>
