@@ -178,9 +178,9 @@
 
                         <div class="form-group">
                             <label class="form-label">Attach File (PDF, DOCX, PPTX, ZIP, Images - Max 25MB)</label>
-                            <div class="file-upload-wrapper" style="border: 2px dashed rgba(0, 229, 255, 0.3); padding: 1.5rem; border-radius: var(--radius-sm); text-align: center; background: rgba(255, 255, 255, 0.02);">
+                            <div class="file-upload-wrapper" style="border: 2px dashed #cbd5e1; padding: 1.5rem; border-radius: var(--radius-sm); text-align: center; background: #f8fafc;">
                                 <input type="file" name="file" id="note-file" style="display: none;">
-                                <label for="note-file" class="file-upload-label" style="cursor: pointer; display: block; font-weight: 600; color: var(--primary);">
+                                <label for="note-file" class="file-upload-label" style="cursor: pointer; display: block; font-weight: 600; color: #3B0A6B;">
                                     📎 Click here to choose note file to upload
                                 </label>
                             </div>
@@ -197,7 +197,7 @@
         <!-- TAB 3: MANAGE UPLOADED NOTES -->
         <div id="tab-manage-notes" class="tab-pane">
             <div style="margin-bottom: 1.25rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">
                     Your Uploaded Study Materials (<%= notes.length %>)
                 </h3>
             </div>
@@ -249,10 +249,10 @@
         <!-- TAB 4: TEACHING SCHEDULE -->
         <div id="tab-schedule" class="tab-pane">
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">
                     📅 Your Assigned Class Timetable
                 </h3>
-                <p style="color: var(--gray-600); font-size: 0.88rem;">
+                <p style="color: #64748b; font-size: 0.88rem;">
                     Weekly schedule of classes and room assignments where you are assigned as the instructor.
                 </p>
             </div>
@@ -266,20 +266,20 @@
             <% } else { %>
                 <div style="display: flex; flex-direction: column; gap: 1.25rem;">
                     <% schedules.forEach(sched => { %>
-                        <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 0;">
-                            <h4 style="font-weight: 800; font-size: 1rem; color: var(--primary); margin-bottom: 0.75rem;">
+                        <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 0; background: #ffffff; border: 1px solid #e2e8f0;">
+                            <h4 style="font-weight: 800; font-size: 1rem; color: #3B0A6B; margin-bottom: 0.75rem;">
                                 🗓️ <%= sched.day %> (Section <%= sched.section %>)
                             </h4>
                             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem;">
                                 <% sched.slots.filter(s => s.teacher && s.teacher.toString() === user.id.toString()).forEach(slot => { %>
-                                    <div style="background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 0.75rem;">
-                                        <div style="font-weight: 800; font-size: 0.8rem; color: var(--dark);">
+                                    <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);">
+                                        <div style="font-weight: 800; font-size: 0.8rem; color: #0f172a;">
                                             Period <%= slot.period %> (<%= slot.startTime %> - <%= slot.endTime %>)
                                         </div>
-                                        <div style="color: var(--primary); font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">
+                                        <div style="color: #3B0A6B; font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">
                                             <%= slot.subject ? `${slot.subject.code} - ${slot.subject.name}` : '' %>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: var(--gray-400); margin-top: 0.25rem;">
+                                        <div style="font-size: 0.8rem; color: #475569; margin-top: 0.25rem;">
                                             📍 <%= slot.room %> • Sec <%= sched.section %>
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@
                     <% } else { %>
                         <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                             <thead>
-                                <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
+                                <tr style="text-align: left; border-bottom: 2px solid #e2e8f0; color: #475569;">
                                     <th style="padding: 0.6rem;">Student</th>
                                     <th style="padding: 0.6rem;">Course</th>
                                     <th style="padding: 0.6rem;">Exam</th>
@@ -318,14 +318,14 @@
                             </thead>
                             <tbody>
                                 <% publishedResults.forEach(r => { %>
-                                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                                    <tr style="border-bottom: 1px solid #f1f5f9;">
                                         <td style="padding: 0.6rem;">
-                                            <strong><%= r.student ? r.student.name : 'Unknown' %></strong>
-                                            <div style="font-size: 0.75rem; color: var(--gray-400);"><%= r.student ? r.student.rollNumber : '' %></div>
+                                            <strong style="color: #0f172a;"><%= r.student ? r.student.name : 'Unknown' %></strong>
+                                            <div style="font-size: 0.75rem; color: #64748b;"><%= r.student ? r.student.rollNumber : '' %></div>
                                         </td>
-                                        <td style="padding: 0.6rem;"><%= r.subject ? r.subject.code : '' %></td>
-                                        <td style="padding: 0.6rem;"><%= r.examName %></td>
-                                        <td style="padding: 0.6rem; font-weight: 700;"><%= r.marksObtained %> / <%= r.maxMarks %></td>
+                                        <td style="padding: 0.6rem; color: #0f172a;"><%= r.subject ? r.subject.code : '' %></td>
+                                        <td style="padding: 0.6rem; color: #475569;"><%= r.examName %></td>
+                                        <td style="padding: 0.6rem; font-weight: 700; color: #0f172a;"><%= r.marksObtained %> / <%= r.maxMarks %></td>
                                         <td style="padding: 0.6rem;">
                                             <span class="user-role-badge <%= r.grade === 'F' ? 'admin' : 'student' %>"><%= r.grade %></span>
                                         </td>
@@ -406,7 +406,7 @@
                     </button>
                 </form>
 
-                <div style="margin-top: 2.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem;">
+                <div style="margin-top: 2.5rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
                     <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">
                         Your Assigned Subjects (<%= subjects.length %>)
                     </h4>

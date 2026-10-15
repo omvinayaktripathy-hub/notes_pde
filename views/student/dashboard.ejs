@@ -143,10 +143,10 @@
                 </h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem;">
                     <% subjects.forEach(subject => { %>
-                        <div style="background: rgba(15, 8, 29, 0.75); border: 1px solid rgba(0, 229, 255, 0.16); border-radius: var(--radius-md); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 1.25rem; box-shadow: var(--shadow-sm);">
                             <span class="note-subject-pill" style="margin-bottom: 0.5rem; display: inline-block;"><%= subject.code %></span>
-                            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--dark);"><%= subject.name %></h4>
-                            <a href="/student/notes/<%= subject._id %>" style="color: var(--primary); font-size: 0.82rem; font-weight: 700; text-decoration: none;">
+                            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: #0f172a;"><%= subject.name %></h4>
+                            <a href="/student/notes/<%= subject._id %>" style="color: #3B0A6B; font-size: 0.82rem; font-weight: 700; text-decoration: none;">
                                 View Course Notes →
                             </a>
                         </div>
@@ -158,10 +158,10 @@
         <!-- TAB 2: TIMETABLE -->
         <div id="tab-timetable" class="tab-pane">
             <div style="margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark);">
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">
                     📅 Weekly Timetable — Section <%= user.section %>
                 </h3>
-                <p style="color: var(--gray-600); font-size: 0.88rem;">
+                <p style="color: #64748b; font-size: 0.88rem;">
                     Your schedule of lectures, labs, and faculty room assignments for Section <%= user.section %>.
                 </p>
             </div>
@@ -175,28 +175,28 @@
             <% } else { %>
                 <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                     <% timetables.forEach(t => { %>
-                        <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 0;">
-                            <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <div class="glass-panel" style="padding: 1.25rem; margin-bottom: 0; background: #ffffff; border: 1px solid #e2e8f0;">
+                            <h4 style="font-size: 1.1rem; font-weight: 800; color: #3B0A6B; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                                 <span>🗓️</span> <%= t.day %>
                             </h4>
                             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
                                 <% t.slots.forEach(slot => { %>
-                                    <div style="background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 1rem;">
+                                    <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: var(--radius-sm); padding: 1rem; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                            <span style="font-weight: 800; font-size: 0.78rem; background: rgba(0, 229, 255, 0.15); color: var(--primary); padding: 0.15rem 0.5rem; border-radius: var(--radius-full);">
+                                            <span style="font-weight: 800; font-size: 0.78rem; background: #ede9fe; color: #581c87; padding: 0.2rem 0.55rem; border-radius: var(--radius-full);">
                                                 Period <%= slot.period %>
                                             </span>
-                                            <span style="font-size: 0.78rem; font-weight: 700; color: var(--gray-400);">
+                                            <span style="font-size: 0.78rem; font-weight: 700; color: #64748b;">
                                                 ⏱️ <%= slot.startTime %> - <%= slot.endTime %>
                                             </span>
                                         </div>
-                                        <div style="font-weight: 700; font-size: 0.95rem; color: var(--dark); margin-bottom: 0.25rem;">
+                                        <div style="font-weight: 800; font-size: 0.95rem; color: #0f172a; margin-bottom: 0.25rem;">
                                             <%= slot.subject ? `${slot.subject.code}: ${slot.subject.name}` : 'Course' %>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: var(--gray-400);">
+                                        <div style="font-size: 0.82rem; color: #475569; margin-bottom: 0.2rem;">
                                             👨‍🏫 <%= slot.teacher ? slot.teacher.name : 'Faculty' %>
                                         </div>
-                                        <div style="font-size: 0.78rem; color: var(--primary); font-weight: 600; margin-top: 0.35rem;">
+                                        <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700; margin-top: 0.35rem;">
                                             📍 <%= slot.room %>
                                         </div>
                                     </div>
@@ -242,15 +242,15 @@
                                 📝 <%= r.examName %>
                             </div>
 
-                            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1rem;">
-                                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.15rem; color: var(--dark);">
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1rem;">
+                                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.15rem; color: #0f172a;">
                                     <span>Score:</span>
                                     <span><%= r.marksObtained %> / <%= r.maxMarks %></span>
                                 </div>
-                                <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.08); border-radius: var(--radius-full); margin-top: 0.5rem; overflow: hidden;">
+                                <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: var(--radius-full); margin-top: 0.5rem; overflow: hidden;">
                                     <div style="width: <%= Math.min(100, (r.marksObtained / r.maxMarks) * 100) %>%; height: 100%; background: <%= r.grade === 'F' ? 'var(--danger)' : 'var(--success)' %>;"></div>
                                 </div>
-                                <div style="font-size: 0.78rem; color: var(--gray-400); margin-top: 0.4rem; text-align: right;">
+                                <div style="font-size: 0.78rem; color: #64748b; margin-top: 0.4rem; text-align: right;">
                                     <%= ((r.marksObtained / r.maxMarks) * 100).toFixed(1) %>%
                                 </div>
                             </div>
