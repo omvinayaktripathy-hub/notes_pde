@@ -4,6 +4,8 @@ const upload = require('../config/multer');
 const teacherController = require('../controllers/teacherController');
 const { requireTeacher } = require('../middleware/auth');
 
+const { uploadLimiter } = require('../middleware/rateLimiter');
+
 // Auth guard for all teacher routes
 router.use(requireTeacher);
 
@@ -13,8 +15,8 @@ router.get('/dashboard', teacherController.getDashboard);
 // Add subject
 router.post('/subject', teacherController.postSubject);
 
-// Upload note (with extension preservation and size limits)
-router.post('/upload-note', upload.single('file'), teacherController.postUploadNote);
+// Upload note (with extension preservation, MIME verification, and rate limits)
+router.post('/upload-note', uploadLimiter, upload.single('file'), teacherController.postUploadNote);
 
 // Resolve notification with teacher reply
 router.post('/resolve-notification/:id', teacherController.postResolveNotification);

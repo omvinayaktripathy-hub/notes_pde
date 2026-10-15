@@ -1,0 +1,71 @@
+# ==============================================================================
+# KUBERNETES HORIZONTAL POD AUTOSCALER (HPA) & DEPLOYMENT
+# Automatically scales container replicas based on CPU & Memory load
+# ==============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notes-platform-deployment
+  labels:
+    app: notes-platform
+spec:
+  replicas: 2 # Initial base capacity
+  selector:
+    matchLabels:
+      app: notes-platform
+  template:
+    metadata:
+      labels:
+        app: notes-platform
+    spec:
+      containers:
+      - name: notes-app
+        image: notes-platform:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "750m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: notes-platform-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notes-platform-deployment
+  minReplicas: 2  # Minimum pods in low-traffic hours
+  maxReplicas: 10 # Maximum pods during exam registration & grade release spikes
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

@@ -2,11 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= subject ? subject.name : 'Subject Notes' %> - NotesHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title><%= subject ? `${subject.code} - ${subject.name}` : 'Course Notes' %> - NotesHub</title>
+    <meta name="description" content="View and download verified study materials, lecture slides, and notes for <%= subject ? subject.name : 'your course' %> on NotesHub.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.svg">
+
+    <!-- Fonts & Stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="page-dashboard">
     <%- include('../partials/navbar') %>
     <%- include('../partials/alerts') %>
 
@@ -42,7 +50,7 @@
                                 <span class="note-section-pill">Sec <%= note.section %></span>
                             </div>
                             <h3 class="note-title"><%= note.title %></h3>
-                            <p class="note-desc"><%= note.description || 'No detailed description.' %></p>
+                            <p class="note-desc"><%= note.description || 'No detailed description provided.' %></p>
                         </div>
                         <div class="note-footer">
                             <div>
@@ -51,8 +59,8 @@
                                     <span style="margin-left: 0.4rem; font-weight: 700; color: var(--primary);">[<%= note.fileType %>]</span>
                                 <% } %>
                             </div>
-                            <% if (note.fileUrl) { %>
-                                <a href="<%= note.fileUrl %>" class="btn-download-note" download="<%= note.originalName || '' %>">
+                            <% if (note.fileUrl || note.storedFilename) { %>
+                                <a href="/notes/download/<%= note._id %>" class="btn-download-note">
                                     <span>⬇️ Download</span>
                                 </a>
                             <% } %>
@@ -62,6 +70,8 @@
             </div>
         <% } %>
     </div>
+
+    <%- include('../partials/footer') %>
 
     <script src="/js/main.js"></script>
 </body>

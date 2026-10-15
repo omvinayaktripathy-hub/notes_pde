@@ -3,31 +3,117 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const path = require('path');
+const fs = require('fs');
+const helmet = require('helmet');
+const cors = require('cors');
+const mongoSanitize = require('express-mongo-sanitize');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
+const validateEnv = require('./config/validateEnv');
 const { userContext } = require('./middleware/auth');
+const { globalLimiter } = require('./middleware/rateLimiter');
+
+// Validate environment variables and security posture
+validateEnv();
 
 // Connect to MongoDB
 connectDB();
 
 const app = express();
 
-// Body parser & cookie middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Disable X-Powered-By to prevent framework fingerprinting
+app.disable('x-powered-by');
+
+// Health Check Probe for Load Balancers & Auto-Scalers
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'UP',
+        uptime: Math.floor(process.uptime()),
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Trust reverse proxy for accurate IP address resolution in rate limiting and secure cookies
+app.set('trust proxy', 1);
+
+// Security Headers with Helmet
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://challenges.cloudflare.com"],
+            frameSrc: ["https://challenges.cloudflare.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "blob:"],
+            connectSrc: ["'self'", "https://challenges.cloudflare.com"]
+        }
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Lock down CORS
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+    : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl) and trusted origins
+        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+            return callback(null, true);
+        }
+        return callback(new Error('CORS policy: Access denied from this origin.'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+// Prevent NoSQL Query Injection (sanitizes $, .)
+app.use(mongoSanitize());
+
+// Apply global rate limiting across all incoming requests
+app.use(globalLimiter);
+
+// Body parser & cookie middleware with strict size limits
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
 
-// Static assets (Frontend styles, scripts, images, uploads)
+// Protected /uploads route (Prevents direct unauthenticated file scraping)
+app.use('/uploads', (req, res, next) => {
+    if (!req.session || !req.session.user) {
+        return res.status(401).render('error', {
+            title: 'Authentication Required',
+            message: 'You must be logged in to access platform files.'
+        });
+    }
+    const safeFilename = path.basename(req.path);
+    const privatePath = path.join(__dirname, 'storage', 'uploads', safeFilename);
+    const legacyPath = path.join(__dirname, 'public', 'uploads', safeFilename);
+
+    if (fs.existsSync(privatePath)) {
+        return res.download(privatePath);
+    } else if (fs.existsSync(legacyPath)) {
+        return res.download(legacyPath);
+    }
+    res.status(404).render('error', { title: 'File Missing', message: 'Requested file not found.' });
+});
+
+// Static assets (Frontend styles, scripts, client images ONLY)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // View engine configuration
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Session configuration
+// Session configuration with HTTPS-only cookies in production
+const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'notes_platform_super_secret_key',
+    name: isProduction ? '__Host-session' : 'sid', // Secure prefix in prod, compatible in dev
+    secret: process.env.SESSION_SECRET || 'notes_platform_super_secret_production_key_change_in_env',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -36,8 +122,9 @@ app.use(session({
     }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-        httpOnly: true,
-        sameSite: 'lax'
+        httpOnly: true, // Prevents XSS cookie theft
+        sameSite: 'lax', // CSRF mitigation
+        secure: isProduction // Transmit over HTTPS strictly in production
     }
 }));
 
@@ -50,27 +137,36 @@ const studentRoutes = require('./routes/student');
 const teacherRoutes = require('./routes/teacher');
 const adminRoutes = require('./routes/admin');
 const apiRoutes = require('./routes/api');
+const notesRoutes = require('./routes/notes');
 
 app.use('/', authRoutes);
 app.use('/student', studentRoutes);
 app.use('/teacher', teacherRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
+app.use('/notes', notesRoutes);
 
 // 404 handler
 app.use((req, res) => {
     res.status(404).render('error', {
-        title: 'Page Not Found',
-        message: 'The page you are looking for does not exist or has been moved.'
+        statusCode: 404,
+        title: '404 - Page Not Found',
+        message: 'The page or academic resource you are looking for does not exist or has been moved.'
     });
 });
 
-// Global error handler
+// Global error handler with Debug Mode Off in Production
 app.use((err, req, res, next) => {
-    console.error('Unhandled Server Error:', err);
-    res.status(500).render('error', {
-        title: 'Server Error',
-        message: err.message || 'Something went wrong on our end.'
+    console.error('Server Error:', err);
+    const isProd = process.env.NODE_ENV === 'production';
+    const status = err.status || 500;
+
+    res.status(status).render('error', {
+        statusCode: status,
+        title: status === 404 ? '404 - Page Not Found' : 'Server Error',
+        message: isProd 
+            ? 'An internal error occurred. Please contact the administrator.' 
+            : (err.message || 'Something went wrong on our end.')
     });
 });
 
@@ -79,7 +175,7 @@ const HOST = '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
     console.log(`🚀 Notes Platform Server running on http://localhost:${PORT}`);
-    console.log(`📱 Mobile access available on: http://<YOUR-IP>:${PORT}`);
+    console.log(`🔒 Security headers, rate limiting, and private storage enabled.`);
 });
 
 module.exports = app;

@@ -4,7 +4,8 @@ const NoteSchema = new mongoose.Schema({
     subject: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
-        required: true
+        required: true,
+        index: true
     },
     title: {
         type: String,
@@ -18,6 +19,9 @@ const NoteSchema = new mongoose.Schema({
     fileUrl: {
         type: String
     },
+    storedFilename: {
+        type: String
+    },
     originalName: {
         type: String
     },
@@ -29,17 +33,28 @@ const NoteSchema = new mongoose.Schema({
     },
     section: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true
     }
 });
+
+// Compound & Performance Indexes
+NoteSchema.index({ subject: 1, section: 1 });
+NoteSchema.index({ section: 1, createdAt: -1 });
+NoteSchema.index({ uploadedBy: 1, createdAt: -1 });
+
+// Full-Text Search Index for instant title & description queries
+NoteSchema.index({ title: 'text', description: 'text' });
 
 module.exports = mongoose.model('Note', NoteSchema);

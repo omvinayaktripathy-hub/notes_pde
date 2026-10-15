@@ -31,8 +31,12 @@ exports.getAdminLogin = (req, res) => {
 exports.postStudentLogin = async (req, res) => {
     try {
         const { rollNumber, password } = req.body;
-        const normalizedRoll = (rollNumber || '').trim().toUpperCase();
+        if (!rollNumber || !password || typeof rollNumber !== 'string' || typeof password !== 'string') {
+            return res.render('login-student', { error: 'Please enter a valid Roll Number and password.' });
+        }
 
+        const normalizedRoll = rollNumber.trim().toUpperCase();
+        // Parameterized MongoDB query ensuring rollNumber is strictly a string primitive
         const user = await User.findOne({ rollNumber: normalizedRoll });
 
         if (!user || user.role !== 'student') {
@@ -44,16 +48,21 @@ exports.postStudentLogin = async (req, res) => {
             return res.render('login-student', { error: 'Invalid password. Please check and try again.' });
         }
 
-        req.session.user = {
-            id: user._id,
-            rollNumber: user.rollNumber,
-            name: user.name,
-            role: user.role,
-            section: user.section
-        };
-        req.session.successMsg = `Welcome back, ${user.name}!`;
-
-        res.redirect('/student/dashboard');
+        // Regenerate session upon authentication to prevent Session Fixation attacks
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error('Session regeneration error:', err);
+            }
+            req.session.user = {
+                id: user._id,
+                rollNumber: user.rollNumber,
+                name: user.name,
+                role: user.role,
+                section: user.section
+            };
+            req.session.successMsg = `Welcome back, ${user.name}!`;
+            res.redirect('/student/dashboard');
+        });
     } catch (error) {
         console.error('Student login error:', error);
         res.render('login-student', { error: 'An unexpected error occurred during login.' });
@@ -63,8 +72,11 @@ exports.postStudentLogin = async (req, res) => {
 exports.postTeacherLogin = async (req, res) => {
     try {
         const { rollNumber, password } = req.body;
-        const normalizedId = (rollNumber || '').trim().toUpperCase();
+        if (!rollNumber || !password || typeof rollNumber !== 'string' || typeof password !== 'string') {
+            return res.render('login-teacher', { error: 'Please enter a valid Faculty ID and password.' });
+        }
 
+        const normalizedId = rollNumber.trim().toUpperCase();
         const user = await User.findOne({ rollNumber: normalizedId });
 
         if (!user || user.role !== 'teacher') {
@@ -76,16 +88,20 @@ exports.postTeacherLogin = async (req, res) => {
             return res.render('login-teacher', { error: 'Invalid password. Please check and try again.' });
         }
 
-        req.session.user = {
-            id: user._id,
-            rollNumber: user.rollNumber,
-            name: user.name,
-            role: user.role,
-            section: user.section
-        };
-        req.session.successMsg = `Welcome, Professor ${user.name}!`;
-
-        res.redirect('/teacher/dashboard');
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error('Session regeneration error:', err);
+            }
+            req.session.user = {
+                id: user._id,
+                rollNumber: user.rollNumber,
+                name: user.name,
+                role: user.role,
+                section: user.section
+            };
+            req.session.successMsg = `Welcome, Professor ${user.name}!`;
+            res.redirect('/teacher/dashboard');
+        });
     } catch (error) {
         console.error('Teacher login error:', error);
         res.render('login-teacher', { error: 'An unexpected error occurred during login.' });
@@ -95,8 +111,11 @@ exports.postTeacherLogin = async (req, res) => {
 exports.postAdminLogin = async (req, res) => {
     try {
         const { rollNumber, password } = req.body;
-        const normalizedId = (rollNumber || '').trim().toUpperCase();
+        if (!rollNumber || !password || typeof rollNumber !== 'string' || typeof password !== 'string') {
+            return res.render('login-admin', { error: 'Please enter valid administrative credentials.' });
+        }
 
+        const normalizedId = rollNumber.trim().toUpperCase();
         const user = await User.findOne({ rollNumber: normalizedId });
 
         if (!user || user.role !== 'admin') {
@@ -108,16 +127,20 @@ exports.postAdminLogin = async (req, res) => {
             return res.render('login-admin', { error: 'Invalid password. Access denied.' });
         }
 
-        req.session.user = {
-            id: user._id,
-            rollNumber: user.rollNumber,
-            name: user.name,
-            role: user.role,
-            section: 'All'
-        };
-        req.session.successMsg = `Welcome, Administrator ${user.name}!`;
-
-        res.redirect('/admin/dashboard');
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error('Session regeneration error:', err);
+            }
+            req.session.user = {
+                id: user._id,
+                rollNumber: user.rollNumber,
+                name: user.name,
+                role: user.role,
+                section: 'All'
+            };
+            req.session.successMsg = `Welcome, Administrator ${user.name}!`;
+            res.redirect('/admin/dashboard');
+        });
     } catch (error) {
         console.error('Admin login error:', error);
         res.render('login-admin', { error: 'An unexpected error occurred during admin authentication.' });
@@ -127,6 +150,7 @@ exports.postAdminLogin = async (req, res) => {
 exports.logout = (req, res) => {
     req.session.destroy(err => {
         if (err) console.error('Logout error:', err);
+        res.clearCookie('connect.sid');
         res.redirect('/');
     });
 };

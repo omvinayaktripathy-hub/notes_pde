@@ -4,12 +4,14 @@ const ResultSchema = new mongoose.Schema({
     student: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index: true
     },
     subject: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject',
-        required: true
+        required: true,
+        index: true
     },
     examName: {
         type: String,
@@ -36,13 +38,20 @@ const ResultSchema = new mongoose.Schema({
     },
     publishedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        index: true
     },
     publishedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true
     }
 });
+
+// Indexes for fast grade lookups
+ResultSchema.index({ student: 1, subject: 1 });
+ResultSchema.index({ publishedBy: 1, publishedAt: -1 });
+ResultSchema.index({ student: 1, publishedAt: -1 });
 
 // Auto-calculate grade before saving if not provided
 ResultSchema.pre('save', function(next) {

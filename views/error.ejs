@@ -2,19 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= typeof title !== 'undefined' ? title : 'Error' %> - Notes Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title><%= typeof title !== 'undefined' ? title : 'Page Not Found' %> - NotesHub</title>
+    <meta name="description" content="The requested page could not be found or an error occurred on NotesHub Academic Platform.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.svg">
+
+    <!-- Fonts & Stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <div class="welcome-page">
-        <div class="welcome-container" style="max-width: 500px; text-align: center;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
-            <h2><%= typeof title !== 'undefined' ? title : 'Notice' %></h2>
-            <p style="color: var(--gray); margin: 1rem 0 2rem;"><%= typeof message !== 'undefined' ? message : 'An error occurred.' %></p>
-            <a href="/" class="btn-primary-glow" style="display: inline-block;">Return to Safety →</a>
+<body class="page-error">
+    <%- include('partials/navbar') %>
+
+    <main class="error-container-wrap">
+        <div class="container">
+            <div class="error-card-box">
+                <div class="error-graphic-badge">
+                    <span class="error-code"><%= typeof statusCode !== 'undefined' ? statusCode : '404' %></span>
+                </div>
+
+                <div class="error-icon-emoji">🧭</div>
+
+                <h1 class="error-heading">
+                    <%= typeof title !== 'undefined' ? title : 'Page Not Found' %>
+                </h1>
+
+                <p class="error-detail-text">
+                    <%= typeof message !== 'undefined' ? message : 'The academic resource, document, or page you were attempting to access is unavailable or has been relocated.' %>
+                </p>
+
+                <div class="error-action-row">
+                    <a href="<%= typeof currentUser !== 'undefined' && currentUser ? (currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="btn-primary-glow error-btn">
+                        <span>← Return to <%= typeof currentUser !== 'undefined' && currentUser ? 'My Dashboard' : 'Campus Home' %></span>
+                    </a>
+                    <a href="/#contact" class="btn-secondary-outline error-btn">
+                        <span>Campus IT Support</span>
+                    </a>
+                </div>
+
+                <div class="error-quicklinks-box">
+                    <span class="quicklinks-label">Helpful Navigation:</span>
+                    <div class="quicklinks-list">
+                        <a href="/login/student" class="quicklink-pill">Student Portal</a>
+                        <a href="/login/teacher" class="quicklink-pill">Faculty Portal</a>
+                        <a href="/login/admin" class="quicklink-pill">Admin Console</a>
+                        <a href="mailto:support@noteshub.edu" class="quicklink-pill">Email Support</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script src="/js/main.js"></script>
 </body>
 </html>

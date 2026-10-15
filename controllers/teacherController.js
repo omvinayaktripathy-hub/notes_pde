@@ -6,6 +6,7 @@ const Notification = require('../models/Notification');
 const Timetable = require('../models/Timetable');
 const Result = require('../models/Result');
 const User = require('../models/User');
+const { cache } = require('../utils/cache');
 
 exports.getDashboard = async (req, res) => {
     try {
@@ -72,7 +73,7 @@ exports.getDashboard = async (req, res) => {
 exports.postSubject = async (req, res) => {
     try {
         const { code, name, sections } = req.body;
-        if (!code || !name || !sections) {
+        if (!code || !name || !sections || typeof code !== 'string' || typeof name !== 'string') {
             req.session.errorMsg = 'Please provide subject code, name, and at least one section.';
             return res.redirect('/teacher/dashboard');
         }
@@ -84,19 +85,21 @@ exports.postSubject = async (req, res) => {
             return res.redirect('/teacher/dashboard');
         }
 
-        const parsedSections = sections
+        const parsedSections = String(sections)
             .split(',')
             .map(s => s.trim().toUpperCase())
             .filter(Boolean);
 
         const subject = new Subject({
             code: normalizedCode,
-            name: name.trim(),
+            name: name.trim().substring(0, 100),
             sections: parsedSections,
             teacher: req.session.user.id
         });
 
         await subject.save();
+        cache.delPattern('/api/subjects');
+        cache.delPattern('/api/stats');
         req.session.successMsg = `Subject "${subject.code} - ${subject.name}" added successfully!`;
         res.redirect('/teacher/dashboard');
     } catch (error) {
@@ -110,18 +113,25 @@ exports.postUploadNote = async (req, res) => {
     try {
         const { subjectId, title, description, section } = req.body;
 
-        if (!subjectId || !title || !section) {
+        if (!subjectId || !title || !section || typeof title !== 'string' || typeof section !== 'string') {
             req.session.errorMsg = 'Subject, title, and section are required.';
             return res.redirect('/teacher/dashboard');
         }
 
-        let fileUrl = null;
+        // Authorization / Row-Level Security: Ensure teacher teaches this subject
+        const subject = await Subject.findOne({ _id: subjectId, teacher: req.session.user.id });
+        if (!subject) {
+            req.session.errorMsg = 'Unauthorized: You are not assigned to teach this subject.';
+            return res.redirect('/teacher/dashboard');
+        }
+
         let originalName = null;
         let fileSize = null;
         let fileType = null;
+        let storedFilename = null;
 
         if (req.file) {
-            fileUrl = '/uploads/' + req.file.filename;
+            storedFilename = req.file.filename;
             originalName = req.file.originalname;
             fileSize = req.file.size;
             fileType = path.extname(req.file.originalname).replace('.', '').toUpperCase();
@@ -129,9 +139,9 @@ exports.postUploadNote = async (req, res) => {
 
         const note = new Note({
             subject: subjectId,
-            title: title.trim(),
-            description: description ? description.trim() : '',
-            fileUrl,
+            title: title.trim().substring(0, 150),
+            description: description && typeof description === 'string' ? description.trim().substring(0, 500) : '',
+            storedFilename,
             originalName,
             fileSize,
             fileType,
@@ -139,9 +149,14 @@ exports.postUploadNote = async (req, res) => {
             uploadedBy: req.session.user.id
         });
 
+        // Set private authenticated download URL
+        note.fileUrl = `/notes/download/${note._id}`;
+
         await note.save();
+        cache.delPattern('/api/notes');
+        cache.delPattern('/api/stats');
         req.session.successMsg = `Note "${note.title}" uploaded successfully!`;
-        res.redirect('/teacher/dashboard#notes-tab');
+        res.redirect('/teacher/dashboard#tab-manage-notes');
     } catch (error) {
         console.error('Error uploading note:', error);
         req.session.errorMsg = error.message || 'Failed to upload note.';
@@ -149,20 +164,38 @@ exports.postUploadNote = async (req, res) => {
     }
 };
 
+// IDOR Fix: Resolve notification strictly if teacher owns the subject
 exports.postResolveNotification = async (req, res) => {
     try {
         const { id } = req.params;
         const { reply } = req.body;
 
-        await Notification.findByIdAndUpdate(id, {
-            status: 'resolved',
-            reply: reply ? reply.trim() : 'Resolved by teacher.',
-            resolvedBy: req.session.user.id,
-            resolvedAt: new Date()
-        });
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            req.session.errorMsg = 'Invalid notification ID.';
+            return res.redirect('/teacher/dashboard');
+        }
+
+        const notification = await Notification.findById(id).populate('subject');
+        if (!notification) {
+            req.session.errorMsg = 'Notification not found.';
+            return res.redirect('/teacher/dashboard');
+        }
+
+        // Enforce ownership: only the teacher assigned to this subject can resolve it
+        if (!notification.subject || String(notification.subject.teacher) !== String(req.session.user.id)) {
+            req.session.errorMsg = 'Unauthorized: You can only resolve questions for your assigned subjects.';
+            return res.redirect('/teacher/dashboard');
+        }
+
+        notification.status = 'resolved';
+        notification.reply = reply && typeof reply === 'string' ? reply.trim().substring(0, 1000) : 'Resolved by teacher.';
+        notification.resolvedBy = req.session.user.id;
+        notification.resolvedAt = new Date();
+        await notification.save();
+        cache.delPattern('/api/stats');
 
         req.session.successMsg = '✅ Doubt has been resolved and answer sent to student!';
-        res.redirect('/teacher/dashboard#doubts-section');
+        res.redirect('/teacher/dashboard#tab-doubts');
     } catch (error) {
         console.error('Error resolving notification:', error);
         req.session.errorMsg = 'Failed to resolve notification.';
@@ -170,27 +203,36 @@ exports.postResolveNotification = async (req, res) => {
     }
 };
 
+// IDOR & Row-Level Security: Delete note strictly if owned by this teacher
 exports.postDeleteNote = async (req, res) => {
     try {
         const { id } = req.params;
-        const note = await Note.findOne({ _id: id, uploadedBy: req.session.user.id });
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            req.session.errorMsg = 'Invalid note ID.';
+            return res.redirect('/teacher/dashboard');
+        }
 
+        const note = await Note.findOne({ _id: id, uploadedBy: req.session.user.id });
         if (!note) {
             req.session.errorMsg = 'Note not found or permission denied.';
             return res.redirect('/teacher/dashboard');
         }
 
-        // Delete physical file if exists
-        if (note.fileUrl) {
-            const filePath = path.join(__dirname, '..', 'public', note.fileUrl);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
+        // Safely unlink physical file from storage (preventing directory traversal)
+        const filename = note.storedFilename || (note.fileUrl ? path.basename(note.fileUrl) : null);
+        if (filename) {
+            const safeFilename = path.basename(filename);
+            const privatePath = path.join(__dirname, '..', 'storage', 'uploads', safeFilename);
+            const publicPath = path.join(__dirname, '..', 'public', 'uploads', safeFilename);
+            if (fs.existsSync(privatePath)) fs.unlinkSync(privatePath);
+            if (fs.existsSync(publicPath)) fs.unlinkSync(publicPath);
         }
 
         await Note.findByIdAndDelete(id);
+        cache.delPattern('/api/notes');
+        cache.delPattern('/api/stats');
         req.session.successMsg = `Note "${note.title}" has been deleted.`;
-        res.redirect('/teacher/dashboard#notes-tab');
+        res.redirect('/teacher/dashboard#tab-manage-notes');
     } catch (error) {
         console.error('Error deleting note:', error);
         req.session.errorMsg = 'Failed to delete note.';
@@ -198,25 +240,44 @@ exports.postDeleteNote = async (req, res) => {
     }
 };
 
-// Teacher post result
+// Row-Level Security: Teacher can only publish results for subjects they teach
 exports.postPublishResult = async (req, res) => {
     try {
         const { rollNumber, subjectId, examName, marksObtained, maxMarks, remarks } = req.body;
-        const normalizedRoll = rollNumber.trim().toUpperCase();
+        if (!rollNumber || !subjectId || !examName) {
+            req.session.errorMsg = 'Roll number, subject, and exam name are required.';
+            return res.redirect('/teacher/dashboard#tab-results');
+        }
 
+        // Verify teacher teaches this subject
+        const subject = await Subject.findOne({ _id: subjectId, teacher: req.session.user.id });
+        if (!subject) {
+            req.session.errorMsg = 'Unauthorized: You can only publish grades for subjects you teach.';
+            return res.redirect('/teacher/dashboard#tab-results');
+        }
+
+        const normalizedRoll = String(rollNumber).trim().toUpperCase();
         const student = await User.findOne({ rollNumber: normalizedRoll, role: 'student' });
         if (!student) {
             req.session.errorMsg = `No student found with Roll Number ${normalizedRoll}!`;
             return res.redirect('/teacher/dashboard#tab-results');
         }
 
+        const parsedMarks = parseFloat(marksObtained);
+        const parsedMax = parseFloat(maxMarks) || 100;
+
+        if (isNaN(parsedMarks) || parsedMarks < 0 || parsedMarks > parsedMax) {
+            req.session.errorMsg = `Marks obtained must be between 0 and ${parsedMax}.`;
+            return res.redirect('/teacher/dashboard#tab-results');
+        }
+
         const result = new Result({
             student: student._id,
             subject: subjectId,
-            examName: examName.trim(),
-            marksObtained: parseFloat(marksObtained),
-            maxMarks: parseFloat(maxMarks) || 100,
-            remarks: remarks ? remarks.trim() : 'Satisfactory',
+            examName: String(examName).trim().substring(0, 100),
+            marksObtained: parsedMarks,
+            maxMarks: parsedMax,
+            remarks: remarks && typeof remarks === 'string' ? remarks.trim().substring(0, 200) : 'Satisfactory',
             publishedBy: req.session.user.id
         });
 

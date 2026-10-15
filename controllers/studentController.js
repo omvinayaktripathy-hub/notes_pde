@@ -15,7 +15,7 @@ exports.getDashboard = async (req, res) => {
 
         const studentSubjectIds = (student.subjects || []).map(s => s._id);
 
-        // Fetch notes for student's section and enrolled subjects
+        // Fetch notes for student's section and enrolled subjects (Row-Level Security)
         const notes = await Note.find({
             section: { $in: [student.section, 'ALL', 'All'] },
             subject: { $in: studentSubjectIds }
@@ -24,7 +24,7 @@ exports.getDashboard = async (req, res) => {
         .populate('uploadedBy', 'name rollNumber')
         .sort({ createdAt: -1 });
 
-        // Fetch doubts asked by this student
+        // Fetch doubts asked by this student strictly
         const doubts = await Notification.find({
             student: student._id
         })
@@ -40,7 +40,7 @@ exports.getDashboard = async (req, res) => {
         .populate('slots.teacher', 'name')
         .sort({ day: 1 });
 
-        // Fetch academic results for this student
+        // Fetch academic results for this student strictly
         const results = await Result.find({
             student: student._id
         })
@@ -85,15 +85,21 @@ exports.getDashboard = async (req, res) => {
 
 exports.getNotesBySubject = async (req, res) => {
     try {
-        const student = await User.findById(req.session.user.id);
-        const subject = await Subject.findById(req.params.subjectId);
-
-        if (!subject) {
+        const { subjectId } = req.params;
+        if (!subjectId || !subjectId.match(/^[0-9a-fA-F]{24}$/)) {
             return res.redirect('/student/dashboard');
         }
 
+        const student = await User.findById(req.session.user.id);
+        const subject = await Subject.findById(subjectId);
+
+        if (!subject || !student) {
+            return res.redirect('/student/dashboard');
+        }
+
+        // Row-Level Security: Only return notes designated for student's section or ALL
         const notes = await Note.find({
-            subject: req.params.subjectId,
+            subject: subjectId,
             section: { $in: [student.section, 'ALL', 'All'] }
         })
         .populate('subject')
@@ -114,15 +120,20 @@ exports.getNotesBySubject = async (req, res) => {
 exports.postDoubt = async (req, res) => {
     try {
         const { subjectId, message } = req.body;
-        if (!subjectId || !message || !message.trim()) {
+        if (!subjectId || !message || typeof message !== 'string' || !message.trim()) {
             req.session.errorMsg = 'Please select a subject and write your question.';
+            return res.redirect('/student/dashboard');
+        }
+
+        if (!subjectId.match(/^[0-9a-fA-F]{24}$/)) {
+            req.session.errorMsg = 'Invalid subject selected.';
             return res.redirect('/student/dashboard');
         }
 
         const notification = new Notification({
             student: req.session.user.id,
             subject: subjectId,
-            message: message.trim()
+            message: message.trim().substring(0, 1000)
         });
 
         await notification.save();

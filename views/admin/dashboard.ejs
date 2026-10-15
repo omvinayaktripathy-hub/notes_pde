@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Admin Console - NotesHub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Master Administrator Console - NotesHub</title>
+    <meta name="description" content="Central administration console for university IT administrators to manage students, faculty accounts, course assignments, timetables, and system audits.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.svg">
+
+    <!-- Fonts & Stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -74,7 +82,7 @@
 
         <!-- TAB 1: STUDENTS MANAGEMENT -->
         <div id="tab-students" class="tab-pane active">
-            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+            <div class="admin-layout-grid" style="display: grid; gap: 1.5rem; align-items: start;">
                 <!-- Students Table -->
                 <div class="glass-panel" style="overflow-x: auto;">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
@@ -144,7 +152,7 @@
 
         <!-- TAB 2: TEACHERS MANAGEMENT -->
         <div id="tab-teachers" class="tab-pane">
-            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+            <div class="admin-layout-grid" style="display: grid; gap: 1.5rem; align-items: start;">
                 <!-- Teachers Table -->
                 <div class="glass-panel" style="overflow-x: auto;">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
@@ -204,7 +212,7 @@
 
         <!-- TAB 3: SUBJECTS MANAGEMENT -->
         <div id="tab-subjects" class="tab-pane">
-            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+            <div class="admin-layout-grid" style="display: grid; gap: 1.5rem; align-items: start;">
                 <div class="glass-panel" style="overflow-x: auto;">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
                         Active Courses (<%= subjects.length %>)
@@ -274,7 +282,7 @@
 
         <!-- TAB 4: TIMETABLE MANAGEMENT -->
         <div id="tab-timetable" class="tab-pane">
-            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+            <div class="admin-layout-grid" style="display: grid; gap: 1.5rem; align-items: start;">
                 <!-- Existing Schedules View -->
                 <div class="glass-panel">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
@@ -392,7 +400,7 @@
 
         <!-- TAB 5: RESULTS MANAGEMENT -->
         <div id="tab-results" class="tab-pane">
-            <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+            <div class="admin-layout-grid" style="display: grid; gap: 1.5rem; align-items: start;">
                 <!-- Published Results Table -->
                 <div class="glass-panel" style="overflow-x: auto;">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
@@ -480,7 +488,7 @@
 
         <!-- TAB 6: MODERATION -->
         <div id="tab-moderation" class="tab-pane">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div class="admin-layout-grid-equal" style="display: grid; gap: 1.5rem;">
                 <!-- Recent Notes Moderation -->
                 <div class="glass-panel">
                     <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; color: var(--dark);">
@@ -494,8 +502,8 @@
                                     <%= n.subject ? n.subject.code : '' %> • Sec <%= n.section %> • By: <%= n.uploadedBy ? n.uploadedBy.name : 'Faculty' %>
                                 </div>
                             </div>
-                            <% if (n.fileUrl) { %>
-                                <a href="<%= n.fileUrl %>" class="btn-download-note" download style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">⬇️ File</a>
+                            <% if (n.fileUrl || n.storedFilename) { %>
+                                <a href="/notes/download/<%= n._id %>" class="btn-download-note" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;">⬇️ File</a>
                             <% } %>
                         </div>
                     <% }) %>
@@ -519,6 +527,8 @@
             </div>
         </div>
     </div>
+
+    <%- include('../partials/footer') %>
 
     <script src="/js/main.js"></script>
 </body>

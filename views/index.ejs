@@ -2,58 +2,221 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotesHub - Student Learning Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NotesHub - Academic Notes, Timetables & Results Platform</title>
+    <meta name="description" content="NotesHub is the premier campus resource platform for university students and faculty. Access verified lecture materials, section timetables, semester examination grades, and doubt resolution.">
+    <meta name="keywords" content="lecture notes, university timetable, exam results, college study materials, academic portal">
+    <meta name="theme-color" content="#4f46e5">
+
+    <!-- Open Graph Social Metadata -->
+    <meta property="og:title" content="NotesHub - Academic Learning & Resource Platform">
+    <meta property="og:description" content="Centralized academic resource hub for students and faculty. Download lecture notes, review weekly timetables, and verify examination results.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.svg">
+
+    <!-- Fonts & Stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
+<body class="page-home">
     <%- include('partials/navbar') %>
     <%- include('partials/alerts') %>
 
+    <!-- Hero Section -->
     <section class="welcome-hero">
-        <div class="welcome-content-box">
-            <div class="hero-badge">
-                <span>✨</span> Student Learning & Academic Resource Hub
-            </div>
-            <h1 class="hero-title">Academic Notes, Timetables & Results, Simplified.</h1>
-            <p class="hero-subtitle">
-                Access curated lecture materials, weekly timetables, exam results, and doubt resolution customized for your academic section.
-            </p>
+        <div class="container hero-container">
+            <div class="welcome-content-box">
+                <div class="hero-badge">
+                    <span>✨</span> Verified Academic Resource Platform
+                </div>
+                <h1 class="hero-title">Academic Notes, Timetables & Results, Simplified.</h1>
+                <p class="hero-subtitle">
+                    Access verified faculty lecture slides, weekly class schedules, examination grades, and direct professor doubt clearance customized for your academic section.
+                </p>
 
-            <div style="margin-bottom: 3.5rem;">
-                <a href="/login/student" class="btn-primary-glow" style="display: inline-flex; width: auto; font-size: 1.1rem; padding: 1rem 2.5rem; text-decoration: none; border-radius: 50px;">
-                    <span>Enter Student Portal</span> →
-                </a>
-            </div>
-
-            <!-- Student Feature Highlights (Not Portals!) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; text-align: left;">
-                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
-                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📖</div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Course Notes</h3>
-                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
-                        Download verified study guides, lecture slides, and PDF resources directly from your faculty instructors.
-                    </p>
+                <!-- Hero Call to Action Buttons -->
+                <div class="hero-action-buttons">
+                    <a href="/login/student" class="btn-primary-glow hero-btn">
+                        <span>Enter Student Portal</span> →
+                    </a>
+                    <a href="/login/teacher" class="btn-secondary-outline hero-btn">
+                        <span>Faculty Portal</span> 👨‍🏫
+                    </a>
                 </div>
 
-                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
-                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📅</div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Weekly Timetable</h3>
-                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
-                        Keep track of your section's daily class timings, periods, lecture halls, and assigned faculty members.
-                    </p>
-                </div>
+                <!-- Three Core Platform Highlights -->
+                <div class="hero-feature-grid">
+                    <div class="hero-feature-card">
+                        <div class="feature-card-icon">📖</div>
+                        <h3 class="feature-card-title">Course Notes</h3>
+                        <p class="feature-card-desc">
+                            Download lecture PDFs, study guides, and presentation slides uploaded directly by your assigned professors.
+                        </p>
+                    </div>
 
-                <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-lg); padding: 1.75rem;">
-                    <div style="font-size: 2.2rem; margin-bottom: 0.75rem;">📊</div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Exam Results</h3>
-                    <p style="color: #94a3b8; font-size: 0.88rem; line-height: 1.6;">
-                        Check your semester examination grades, subject scores, and faculty evaluation remarks in real time.
-                    </p>
+                    <div class="hero-feature-card">
+                        <div class="feature-card-icon">📅</div>
+                        <h3 class="feature-card-title">Weekly Timetables</h3>
+                        <p class="feature-card-desc">
+                            Check lecture hall numbers, period timings, and faculty schedules tailored specifically for your academic section.
+                        </p>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <div class="feature-card-icon">📊</div>
+                        <h3 class="feature-card-title">Exam Results</h3>
+                        <p class="feature-card-desc">
+                            Review semester scores, subject assessments, and faculty grading remarks with instant grade calculation.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Deep-Dive Features Section -->
+    <section class="section-padded" id="features">
+        <div class="container">
+            <div class="section-header-center">
+                <span class="section-badge">Platform Architecture</span>
+                <h2 class="section-title">Designed for Modern Higher Education</h2>
+                <p class="section-subtitle">
+                    Everything students and educators need in one cohesive, secure, and fast academic workspace.
+                </p>
+            </div>
+
+            <div class="features-detailed-grid">
+                <div class="feature-detail-box">
+                    <div class="detail-icon-circle indigo">🔒</div>
+                    <h3>Private Section Isolation</h3>
+                    <p>Notes and schedules are strictly filtered by student section and enrolled courses, ensuring relevant materials without noise.</p>
+                </div>
+
+                <div class="feature-detail-box">
+                    <div class="detail-icon-circle sky">⚡</div>
+                    <h3>Instant Live Search</h3>
+                    <p>Filter through hundreds of study files, lecture codes, and presentations in real time using instant client-side filtering.</p>
+                </div>
+
+                <div class="feature-detail-box">
+                    <div class="detail-icon-circle emerald">💬</div>
+                    <h3>Direct Doubt Resolution</h3>
+                    <p>Submit questions directly to course instructors and receive notifications when professors review and post answers.</p>
+                </div>
+
+                <div class="feature-detail-box">
+                    <div class="detail-icon-circle amber">🛡️</div>
+                    <h3>Enterprise Security</h3>
+                    <p>Private storage isolation, strict rate limiting, audit logging, and parameterized protection for all campus data.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section-padded bg-subtle" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <span class="section-badge">About NotesHub</span>
+                    <h2 class="section-title">Empowering Academic Excellence Every Semester</h2>
+                    <p class="about-paragraph">
+                        NotesHub was built to eliminate lost study materials, scattered communication channels, and outdated notice boards. By unifying resource distribution, timetable scheduling, and performance tracking into one system, students spend less time hunting for files and more time mastering concepts.
+                    </p>
+                    <div class="about-stats-row">
+                        <div class="about-stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Faculty Verified Files</div>
+                        </div>
+                        <div class="about-stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Campus Cloud Access</div>
+                        </div>
+                        <div class="about-stat-item">
+                            <div class="stat-number">0s</div>
+                            <div class="stat-label">Download Delays</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-card-display">
+                    <div class="glass-showcase-panel">
+                        <div class="showcase-header">
+                            <span class="badge-active">● Active Semester</span>
+                            <span style="font-size: 0.82rem; color: #64748b;">University Academic Hub</span>
+                        </div>
+                        <div class="showcase-item">
+                            <span>📚 Engineering Mathematics III</span>
+                            <span class="showcase-tag">Sec A &amp; B</span>
+                        </div>
+                        <div class="showcase-item">
+                            <span>💻 Data Structures &amp; Algorithms</span>
+                            <span class="showcase-tag">Sec A</span>
+                        </div>
+                        <div class="showcase-item">
+                            <span>🌐 Computer Networks &amp; Security</span>
+                            <span class="showcase-tag">Sec C</span>
+                        </div>
+                        <div style="margin-top: 1.5rem; text-align: center;">
+                            <a href="/login/student" class="btn-primary-glow" style="display: inline-flex; width: 100%; font-size: 0.92rem; padding: 0.75rem 1.25rem;">
+                                Start Learning Now →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Campus Helpdesk Section -->
+    <section class="section-padded" id="contact">
+        <div class="container">
+            <div class="section-header-center">
+                <span class="section-badge">Campus Support</span>
+                <h2 class="section-title">Need Assistance? We're Here to Help.</h2>
+                <p class="section-subtitle">
+                    Contact the campus academic IT helpdesk for login issues, course enrollment, or instructor inquiries.
+                </p>
+            </div>
+
+            <div class="contact-cards-grid">
+                <!-- Phone Card with Clickable Tel Link -->
+                <div class="contact-card">
+                    <div class="contact-card-icon">📞</div>
+                    <h3>Telephone Helpdesk</h3>
+                    <p>Speak directly with campus tech support during standard operational hours.</p>
+                    <a href="tel:+18005550199" class="contact-action-btn phone-btn">
+                        <span>Call +1 (800) 555-0199</span>
+                    </a>
+                </div>
+
+                <!-- Email Card with Clickable Mailto Link -->
+                <div class="contact-card">
+                    <div class="contact-card-icon">✉️</div>
+                    <h3>Official Support Email</h3>
+                    <p>Send tickets regarding grade publishing discrepancies or login assistance.</p>
+                    <a href="mailto:support@noteshub.edu" class="contact-action-btn email-btn">
+                        <span>Email support@noteshub.edu</span>
+                    </a>
+                </div>
+
+                <!-- Physical Desk Card -->
+                <div class="contact-card">
+                    <div class="contact-card-icon">📍</div>
+                    <h3>Campus IT Helpdesk</h3>
+                    <p>Visit us in person at Room 204, Academic Center, Building C.</p>
+                    <div class="contact-info-badge">
+                        <span>Mon-Fri: 8:00 AM - 6:00 PM EST</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Partial -->
+    <%- include('partials/footer') %>
 
     <script src="/js/main.js"></script>
 </body>

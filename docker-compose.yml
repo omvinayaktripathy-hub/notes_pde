@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # App cluster service configured for 3 horizontal scaled replicas
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/notes_platform
+      - SESSION_SECRET=${SESSION_SECRET:-production_session_secret_change_in_env_file_64_chars}
+    deploy:
+      replicas: 3 # Auto-scale across 3 container replicas
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+    depends_on:
+      - mongo
+    volumes:
+      - app-storage:/app/storage
+
+  # MongoDB Service with persistent volume
+  mongo:
+    image: mongo:6-jammy
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # Nginx Load Balancer routing across the app replicas
+  loadbalancer:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+
+volumes:
+  mongo-data:
+  app-storage:

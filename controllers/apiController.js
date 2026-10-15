@@ -2,24 +2,34 @@ const Note = require('../models/Note');
 const Subject = require('../models/Subject');
 const Notification = require('../models/Notification');
 
-// Search notes API for live client-side filtering
+// Safe regex escape to prevent ReDoS
+const escapeRegex = (string) => {
+    return String(string).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+};
+
+// Search notes API with Row-Level Security (RLS) and ReDoS protection
 exports.searchNotes = async (req, res) => {
     try {
         const { q, subjectId, section } = req.query;
         const filter = {};
+        const currentUser = req.session ? req.session.user : null;
 
-        if (section) {
-            filter.section = section;
+        // Row-Level Security: Students can only search notes for their section or 'ALL'
+        if (currentUser && currentUser.role === 'student') {
+            filter.section = { $in: [currentUser.section, 'ALL', 'All'] };
+        } else if (section && typeof section === 'string') {
+            filter.section = String(section).trim().toUpperCase();
         }
 
-        if (subjectId) {
+        if (subjectId && typeof subjectId === 'string' && subjectId.match(/^[0-9a-fA-F]{24}$/)) {
             filter.subject = subjectId;
         }
 
-        if (q && q.trim()) {
+        if (q && typeof q === 'string' && q.trim().length > 0) {
+            const sanitizedQuery = escapeRegex(q.trim().substring(0, 100));
             filter.$or = [
-                { title: { $regex: q.trim(), $options: 'i' } },
-                { description: { $regex: q.trim(), $options: 'i' } }
+                { title: { $regex: sanitizedQuery, $options: 'i' } },
+                { description: { $regex: sanitizedQuery, $options: 'i' } }
             ];
         }
 
@@ -46,7 +56,7 @@ exports.getSubjects = async (req, res) => {
     }
 };
 
-// Get stats
+// Get stats API
 exports.getStats = async (req, res) => {
     try {
         const noteCount = await Note.countDocuments();

@@ -1,32 +1,107 @@
-<nav class="modern-navbar">
-    <div class="container">
-        <a href="<%= currentUser ? (currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="brand">
-            <span class="brand-logo-icon">📚</span>
-            <span class="brand-text">Notes<span class="brand-highlight">Hub</span></span>
-        </a>
+<header class="modern-navbar-wrapper">
+    <nav class="modern-navbar">
+        <div class="container nav-container">
+            <!-- Clickable Logo -->
+            <a href="<%= currentUser ? (currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="brand" title="NotesHub Home">
+                <span class="brand-logo-icon">📚</span>
+                <span class="brand-text">Notes<span class="brand-highlight">Hub</span></span>
+            </a>
 
-        <% if (currentUser) { %>
-            <div class="nav-user">
-                <div class="user-pill">
-                    <span class="user-role-badge <%= currentUser.role %>">
-                        <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Teacher' : '👨‍🎓 Student') %>
-                    </span>
-                    <span class="user-name"><%= currentUser.name %></span>
-                    <% if (currentUser.section && currentUser.section !== 'All') { %>
-                        <span class="section-tag">Sec <%= currentUser.section %></span>
-                    <% } %>
-                    <span class="roll-tag"><%= currentUser.rollNumber %></span>
+            <!-- Desktop Navigation Links -->
+            <div class="nav-desktop-menu">
+                <a href="/" class="nav-item-link">Home</a>
+                <a href="/#features" class="nav-item-link">Features</a>
+                <a href="/#about" class="nav-item-link">About</a>
+                <a href="/#contact" class="nav-item-link">Contact</a>
+
+                <% if (currentUser) { %>
+                    <div class="nav-user">
+                        <div class="user-pill">
+                            <span class="user-role-badge <%= currentUser.role %>">
+                                <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
+                            </span>
+                            <span class="user-name"><%= currentUser.name %></span>
+                            <% if (currentUser.section && currentUser.section !== 'All') { %>
+                                <span class="section-tag">Sec <%= currentUser.section %></span>
+                            <% } %>
+                            <span class="roll-tag"><%= currentUser.rollNumber %></span>
+                        </div>
+                        <a href="/logout" class="btn-logout" title="Sign out of account">
+                            <span>Logout</span> 🚪
+                        </a>
+                    </div>
+                <% } else { %>
+                    <div class="nav-auth-buttons">
+                        <a href="/login/student" class="nav-btn-student">Student Portal</a>
+                        <a href="/login/teacher" class="nav-btn-outline">Faculty Portal</a>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Mobile Hamburger Toggle Button -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Slide-out Drawer Menu -->
+    <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop"></div>
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="mobile-drawer-header">
+            <a href="/" class="brand">
+                <span class="brand-logo-icon">📚</span>
+                <span class="brand-text">Notes<span class="brand-highlight">Hub</span></span>
+            </a>
+            <button class="mobile-drawer-close" id="mobile-drawer-close" type="button" aria-label="Close menu">✕</button>
+        </div>
+
+        <div class="mobile-drawer-content">
+            <% if (currentUser) { %>
+                <div class="mobile-user-card">
+                    <div class="user-role-badge <%= currentUser.role %>" style="display: inline-block; margin-bottom: 0.5rem;">
+                        <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
+                    </div>
+                    <div style="font-weight: 800; font-size: 1.1rem; color: var(--dark);"><%= currentUser.name %></div>
+                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-top: 0.25rem;">
+                        <%= currentUser.rollNumber %> <%= currentUser.section && currentUser.section !== 'All' ? '• Sec ' + currentUser.section : '' %>
+                    </div>
+                    <a href="<%= currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard') %>" class="btn-primary-glow" style="margin-top: 1rem; padding: 0.6rem 1rem; font-size: 0.9rem;">
+                        Go to Dashboard →
+                    </a>
                 </div>
-                <a href="/logout" class="btn-logout" title="Sign out of your account">
-                    <span>Logout</span> 🚪
-                </a>
+            <% } %>
+
+            <div class="mobile-nav-links">
+                <a href="/" class="mobile-nav-link">🏠 Home</a>
+                <a href="/#features" class="mobile-nav-link">✨ Features</a>
+                <a href="/#about" class="mobile-nav-link">📖 About Platform</a>
+                <a href="/#contact" class="mobile-nav-link">📞 Contact Support</a>
+
+                <div class="mobile-portal-section">
+                    <div class="mobile-section-label">Campus Portals</div>
+                    <a href="/login/student" class="mobile-portal-link student">
+                        <span>👨‍🎓 Student Portal</span>
+                        <span>→</span>
+                    </a>
+                    <a href="/login/teacher" class="mobile-portal-link teacher">
+                        <span>👨‍🏫 Faculty Portal</span>
+                        <span>→</span>
+                    </a>
+                    <a href="/login/admin" class="mobile-portal-link admin">
+                        <span>🛡️ Admin Console</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <% if (currentUser) { %>
+                    <a href="/logout" class="mobile-logout-link">
+                        🚪 Log Out (<%= currentUser.name %>)
+                    </a>
+                <% } %>
             </div>
-        <% } else { %>
-            <div class="nav-links">
-                <a href="/login/student" class="nav-link" style="background: rgba(255, 255, 255, 0.15); color: white; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.45rem 1.2rem;">
-                    Student Login →
-                </a>
-            </div>
-        <% } %>
+        </div>
     </div>
-</nav>
+</header>

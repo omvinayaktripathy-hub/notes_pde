@@ -6,7 +6,8 @@ const UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: true,
-        trim: true
+        trim: true,
+        index: true
     },
     name: {
         type: String,
@@ -19,12 +20,14 @@ const UserSchema = new mongoose.Schema({
     },
     section: {
         type: String,
-        default: 'All'
+        default: 'All',
+        index: true
     },
     role: {
         type: String,
         enum: ['student', 'teacher', 'admin'],
-        default: 'student'
+        default: 'student',
+        index: true
     },
     subjects: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -32,9 +35,14 @@ const UserSchema = new mongoose.Schema({
     }],
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        index: true
     }
 });
+
+// Compound Indexes for fast login and section-filtered queries
+UserSchema.index({ rollNumber: 1, role: 1 });
+UserSchema.index({ section: 1, role: 1 });
 
 UserSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
