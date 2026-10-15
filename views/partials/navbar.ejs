@@ -1,8 +1,9 @@
+<% const user = (typeof currentUser !== 'undefined' && currentUser) ? currentUser : null; %>
 <header class="modern-navbar-wrapper">
     <nav class="modern-navbar">
         <div class="container nav-container">
             <!-- Clickable Logo -->
-            <a href="<%= currentUser ? (currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="brand" title="NotesHub Home">
+            <a href="<%= user ? (user.role === 'admin' ? '/admin/dashboard' : (user.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard')) : '/' %>" class="brand" title="NotesHub Home">
                 <span class="brand-logo-icon">📚</span>
                 <span class="brand-text">Notes<span class="brand-highlight">Hub</span></span>
             </a>
@@ -14,17 +15,17 @@
                 <a href="/#about" class="nav-item-link">About</a>
                 <a href="/#contact" class="nav-item-link">Contact</a>
 
-                <% if (currentUser) { %>
+                <% if (user) { %>
                     <div class="nav-user">
                         <div class="user-pill">
-                            <span class="user-role-badge <%= currentUser.role %>">
-                                <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
+                            <span class="user-role-badge <%= user.role %>">
+                                <%= user.role === 'admin' ? '🛡️ Admin' : (user.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
                             </span>
-                            <span class="user-name"><%= currentUser.name %></span>
-                            <% if (currentUser.section && currentUser.section !== 'All') { %>
-                                <span class="section-tag">Sec <%= currentUser.section %></span>
+                            <span class="user-name"><%= user.name %></span>
+                            <% if (user.section && user.section !== 'All') { %>
+                                <span class="section-tag">Sec <%= user.section %></span>
                             <% } %>
-                            <span class="roll-tag"><%= currentUser.rollNumber %></span>
+                            <span class="roll-tag"><%= user.rollNumber %></span>
                         </div>
                         <a href="/logout" class="btn-logout" title="Sign out of account">
                             <span>Logout</span> 🚪
@@ -59,16 +60,16 @@
         </div>
 
         <div class="mobile-drawer-content">
-            <% if (currentUser) { %>
+            <% if (user) { %>
                 <div class="mobile-user-card">
-                    <div class="user-role-badge <%= currentUser.role %>" style="display: inline-block; margin-bottom: 0.5rem;">
-                        <%= currentUser.role === 'admin' ? '🛡️ Admin' : (currentUser.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
+                    <div class="user-role-badge <%= user.role %>" style="display: inline-block; margin-bottom: 0.5rem;">
+                        <%= user.role === 'admin' ? '🛡️ Admin' : (user.role === 'teacher' ? '👨‍🏫 Faculty' : '👨‍🎓 Student') %>
                     </div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: var(--dark);"><%= currentUser.name %></div>
-                    <div style="font-size: 0.85rem; color: var(--gray-600); margin-top: 0.25rem;">
-                        <%= currentUser.rollNumber %> <%= currentUser.section && currentUser.section !== 'All' ? '• Sec ' + currentUser.section : '' %>
+                    <div style="font-weight: 800; font-size: 1.1rem; color: #ffffff;"><%= user.name %></div>
+                    <div style="font-size: 0.85rem; color: #94a3b8; margin-top: 0.25rem;">
+                        <%= user.rollNumber %> <%= user.section && user.section !== 'All' ? '• Sec ' + user.section : '' %>
                     </div>
-                    <a href="<%= currentUser.role === 'admin' ? '/admin/dashboard' : (currentUser.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard') %>" class="btn-primary-glow" style="margin-top: 1rem; padding: 0.6rem 1rem; font-size: 0.9rem;">
+                    <a href="<%= user.role === 'admin' ? '/admin/dashboard' : (user.role === 'teacher' ? '/teacher/dashboard' : '/student/dashboard') %>" class="btn-primary-glow" style="margin-top: 1rem; padding: 0.6rem 1rem; font-size: 0.9rem;">
                         Go to Dashboard →
                     </a>
                 </div>
@@ -96,9 +97,9 @@
                     </a>
                 </div>
 
-                <% if (currentUser) { %>
+                <% if (user) { %>
                     <a href="/logout" class="mobile-logout-link">
-                        🚪 Log Out (<%= currentUser.name %>)
+                        🚪 Log Out (<%= user.name %>)
                     </a>
                 <% } %>
             </div>

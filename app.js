@@ -25,6 +25,14 @@ const app = express();
 // Disable X-Powered-By to prevent framework fingerprinting
 app.disable('x-powered-by');
 
+// Pre-initialize template locals so views and error pages never hit undeclared reference errors
+app.use((req, res, next) => {
+    res.locals.currentUser = null;
+    res.locals.successMsg = null;
+    res.locals.errorMsg = null;
+    next();
+});
+
 // Health Check Probe for Load Balancers & Auto-Scalers
 app.get('/health', (req, res) => {
     res.status(200).json({
@@ -54,18 +62,37 @@ app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Lock down CORS
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
+// Lock down CORS safely without throwing uncaught 500 crashes
+const customAllowed = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-    : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+    : [];
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl) and trusted origins
-        if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
+        // Direct navigations or curl/server-to-server requests have no origin header
+        if (!origin) return callback(null, true);
+
+        // Allow localhost origins in dev or test
+        if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
             return callback(null, true);
         }
-        return callback(new Error('CORS policy: Access denied from this origin.'));
+
+        // Allow all onrender.com hostnames (e.g. notes-pde-1.onrender.com)
+        if (origin.endsWith('.onrender.com') || origin.includes('onrender.com')) {
+            return callback(null, true);
+        }
+
+        // Allow custom configured origins
+        if (customAllowed.length > 0 && customAllowed.includes(origin)) {
+            return callback(null, true);
+        }
+
+        if (process.env.NODE_ENV !== 'production') {
+            return callback(null, true);
+        }
+
+        // Cleanly decline CORS headers without throwing an Express error that crashes the route
+        return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
@@ -112,7 +139,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Session configuration with HTTPS-only cookies in production
 const isProduction = process.env.NODE_ENV === 'production';
 app.use(session({
-    name: isProduction ? '__Host-session' : 'sid', // Secure prefix in prod, compatible in dev
+    name: 'notes_session',
     secret: process.env.SESSION_SECRET || 'notes_platform_super_secret_production_key_change_in_env',
     resave: false,
     saveUninitialized: false,
@@ -161,13 +188,22 @@ app.use((err, req, res, next) => {
     const isProd = process.env.NODE_ENV === 'production';
     const status = err.status || 500;
 
-    res.status(status).render('error', {
-        statusCode: status,
-        title: status === 404 ? '404 - Page Not Found' : 'Server Error',
-        message: isProd 
-            ? 'An internal error occurred. Please contact the administrator.' 
-            : (err.message || 'Something went wrong on our end.')
-    });
+    res.locals.currentUser = (req.session && req.session.user) ? req.session.user : null;
+    res.locals.successMsg = null;
+    res.locals.errorMsg = null;
+
+    try {
+        res.status(status).render('error', {
+            statusCode: status,
+            title: status === 404 ? '404 - Page Not Found' : 'Server Error',
+            message: isProd 
+                ? 'An internal error occurred. Please contact the administrator.' 
+                : (err.message || 'Something went wrong on our end.')
+        });
+    } catch (renderErr) {
+        console.error('Failed to render error template:', renderErr);
+        res.status(status).send('An unexpected server error occurred. Please try again.');
+    }
 });
 
 const PORT = process.env.PORT || 3000;
