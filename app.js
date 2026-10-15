@@ -7,6 +7,7 @@ const fs = require('fs');
 const helmet = require('helmet');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const connectDB = require('./config/db');
@@ -35,8 +36,10 @@ app.use((req, res, next) => {
 
 // Health Check Probe for Load Balancers & Auto-Scalers
 app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'UP',
+    const isDbConnected = mongoose.connection.readyState === 1;
+    res.status(isDbConnected ? 200 : 503).json({
+        status: isDbConnected ? 'UP' : 'DEGRADED',
+        database: isDbConnected ? 'connected' : 'disconnected',
         uptime: Math.floor(process.uptime()),
         timestamp: new Date().toISOString()
     });

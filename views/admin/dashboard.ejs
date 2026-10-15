@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: #fee2e2; color: #dc2626;">❓</div>
+                <div class="stat-icon" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">❓</div>
                 <div class="stat-content">
                     <h3><%= stats.pendingDoubts %></h3>
                     <p>Pending Doubts</p>
@@ -90,7 +90,7 @@
                     </h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 2px solid var(--gray-200); color: var(--gray-600);">
+                            <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
                                 <th style="padding: 0.6rem;">Roll No</th>
                                 <th style="padding: 0.6rem;">Name</th>
                                 <th style="padding: 0.6rem;">Section</th>
@@ -99,7 +99,7 @@
                         </thead>
                         <tbody>
                             <% students.forEach(s => { %>
-                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                                     <td style="padding: 0.6rem; font-family: var(--font-mono); font-weight: 700;"><%= s.rollNumber %></td>
                                     <td style="padding: 0.6rem;"><%= s.name %></td>
                                     <td style="padding: 0.6rem;"><span class="note-section-pill">Sec <%= s.section %></span></td>
@@ -160,7 +160,7 @@
                     </h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 2px solid var(--gray-200); color: var(--gray-600);">
+                            <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
                                 <th style="padding: 0.6rem;">Faculty ID</th>
                                 <th style="padding: 0.6rem;">Name</th>
                                 <th style="padding: 0.6rem;">Role</th>
@@ -169,7 +169,7 @@
                         </thead>
                         <tbody>
                             <% teachers.forEach(t => { %>
-                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                                     <td style="padding: 0.6rem; font-family: var(--font-mono); font-weight: 700;"><%= t.rollNumber %></td>
                                     <td style="padding: 0.6rem;"><%= t.name %></td>
                                     <td style="padding: 0.6rem;"><span class="user-role-badge teacher">Faculty</span></td>
@@ -219,7 +219,7 @@
                     </h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 2px solid var(--gray-200); color: var(--gray-600);">
+                            <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
                                 <th style="padding: 0.6rem;">Code</th>
                                 <th style="padding: 0.6rem;">Course Name</th>
                                 <th style="padding: 0.6rem;">Sections</th>
@@ -229,7 +229,7 @@
                         </thead>
                         <tbody>
                             <% subjects.forEach(sub => { %>
-                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                                     <td style="padding: 0.6rem; font-weight: 700;"><%= sub.code %></td>
                                     <td style="padding: 0.6rem;"><%= sub.name %></td>
                                     <td style="padding: 0.6rem;"><%= sub.sections.join(', ') %></td>
@@ -296,7 +296,7 @@
                         </div>
                     <% } else { %>
                         <% timetables.forEach(t => { %>
-                            <div style="border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; background: var(--gray-50);">
+                            <div style="border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem; background: rgba(255, 255, 255, 0.02);">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                                     <h4 style="font-weight: 800; font-size: 1rem; color: var(--primary);">
                                         Section <%= t.section %> — <%= t.day %>
@@ -307,14 +307,14 @@
                                 </div>
                                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem;">
                                     <% t.slots.forEach(slot => { %>
-                                        <div style="background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 0.6rem;">
+                                        <div style="background: rgba(15, 8, 29, 0.75); border: 1px solid rgba(0, 229, 255, 0.16); border-radius: var(--radius-sm); padding: 0.6rem;">
                                             <div style="font-weight: 700; font-size: 0.82rem; color: var(--dark);">
                                                 Period <%= slot.period %> (<%= slot.startTime %> - <%= slot.endTime %>)
                                             </div>
                                             <div style="color: var(--primary); font-size: 0.85rem; font-weight: 600;">
                                                 <%= slot.subject ? `${slot.subject.code} - ${slot.subject.name}` : 'Subject' %>
                                             </div>
-                                            <div style="font-size: 0.78rem; color: var(--gray-600);">
+                                            <div style="font-size: 0.78rem; color: var(--gray-400);">
                                                 👨‍🏫 <%= slot.teacher ? slot.teacher.name : 'Faculty' %> • 📍 <%= slot.room %>
                                             </div>
                                         </div>
@@ -408,7 +408,7 @@
                     </h3>
                     <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                         <thead>
-                            <tr style="text-align: left; border-bottom: 2px solid var(--gray-200); color: var(--gray-600);">
+                            <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
                                 <th style="padding: 0.6rem;">Student</th>
                                 <th style="padding: 0.6rem;">Course</th>
                                 <th style="padding: 0.6rem;">Exam</th>
@@ -419,7 +419,7 @@
                         </thead>
                         <tbody>
                             <% results.forEach(r => { %>
-                                <tr style="border-bottom: 1px solid var(--gray-100);">
+                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                                     <td style="padding: 0.6rem;">
                                         <strong><%= r.student ? r.student.name : 'Unknown' %></strong>
                                         <div style="font-size: 0.78rem; color: var(--gray-400);"><%= r.student ? r.student.rollNumber : '' %> (Sec <%= r.student ? r.student.section : '' %>)</div>
@@ -495,10 +495,10 @@
                         Recent Notes Published (<%= notes.length %>)
                     </h3>
                     <% notes.forEach(n => { %>
-                        <div style="border-bottom: 1px solid var(--gray-200); padding: 0.75rem 0; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0.75rem 0; display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <div style="font-weight: 700; color: var(--dark);"><%= n.title %></div>
-                                <div style="font-size: 0.78rem; color: var(--gray-600);">
+                                <div style="font-size: 0.78rem; color: var(--gray-400);">
                                     <%= n.subject ? n.subject.code : '' %> • Sec <%= n.section %> • By: <%= n.uploadedBy ? n.uploadedBy.name : 'Faculty' %>
                                 </div>
                             </div>
@@ -515,7 +515,7 @@
                         Recent Student Doubts (<%= doubts.length %>)
                     </h3>
                     <% doubts.forEach(d => { %>
-                        <div style="border-bottom: 1px solid var(--gray-200); padding: 0.75rem 0;">
+                        <div style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0.75rem 0;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
                                 <span style="font-weight: 700; font-size: 0.85rem;"><%= d.student ? d.student.name : 'Student' %> (<%= d.student ? d.student.rollNumber : '' %>)</span>
                                 <span class="doubt-status-pill <%= d.status %>"><%= d.status %></span>

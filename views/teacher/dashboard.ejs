@@ -178,7 +178,7 @@
 
                         <div class="form-group">
                             <label class="form-label">Attach File (PDF, DOCX, PPTX, ZIP, Images - Max 25MB)</label>
-                            <div class="file-upload-wrapper" style="border: 2px dashed var(--gray-200); padding: 1.5rem; border-radius: var(--radius-sm); text-align: center; background: var(--gray-50);">
+                            <div class="file-upload-wrapper" style="border: 2px dashed rgba(0, 229, 255, 0.3); padding: 1.5rem; border-radius: var(--radius-sm); text-align: center; background: rgba(255, 255, 255, 0.02);">
                                 <input type="file" name="file" id="note-file" style="display: none;">
                                 <label for="note-file" class="file-upload-label" style="cursor: pointer; display: block; font-weight: 600; color: var(--primary);">
                                     📎 Click here to choose note file to upload
@@ -272,14 +272,14 @@
                             </h4>
                             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem;">
                                 <% sched.slots.filter(s => s.teacher && s.teacher.toString() === user.id.toString()).forEach(slot => { %>
-                                    <div style="background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); padding: 0.75rem;">
+                                    <div style="background: rgba(255, 255, 255, 0.03); border: 1.5px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-sm); padding: 0.75rem;">
                                         <div style="font-weight: 800; font-size: 0.8rem; color: var(--dark);">
                                             Period <%= slot.period %> (<%= slot.startTime %> - <%= slot.endTime %>)
                                         </div>
                                         <div style="color: var(--primary); font-weight: 700; font-size: 0.9rem; margin-top: 0.25rem;">
                                             <%= slot.subject ? `${slot.subject.code} - ${slot.subject.name}` : '' %>
                                         </div>
-                                        <div style="font-size: 0.8rem; color: var(--gray-600); margin-top: 0.25rem;">
+                                        <div style="font-size: 0.8rem; color: var(--gray-400); margin-top: 0.25rem;">
                                             📍 <%= slot.room %> • Sec <%= sched.section %>
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@
                     <% } else { %>
                         <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
                             <thead>
-                                <tr style="text-align: left; border-bottom: 2px solid var(--gray-200); color: var(--gray-600);">
+                                <tr style="text-align: left; border-bottom: 2px solid rgba(255, 255, 255, 0.1); color: var(--gray-400);">
                                     <th style="padding: 0.6rem;">Student</th>
                                     <th style="padding: 0.6rem;">Course</th>
                                     <th style="padding: 0.6rem;">Exam</th>
@@ -318,7 +318,7 @@
                             </thead>
                             <tbody>
                                 <% publishedResults.forEach(r => { %>
-                                    <tr style="border-bottom: 1px solid var(--gray-100);">
+                                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                                         <td style="padding: 0.6rem;">
                                             <strong><%= r.student ? r.student.name : 'Unknown' %></strong>
                                             <div style="font-size: 0.75rem; color: var(--gray-400);"><%= r.student ? r.student.rollNumber : '' %></div>
@@ -406,7 +406,7 @@
                     </button>
                 </form>
 
-                <div style="margin-top: 2.5rem; border-top: 1px solid var(--gray-200); padding-top: 1.5rem;">
+                <div style="margin-top: 2.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1.5rem;">
                     <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">
                         Your Assigned Subjects (<%= subjects.length %>)
                     </h4>

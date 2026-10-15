@@ -59,6 +59,7 @@ class CoolingRateLimiter {
                         req.session.errorMsg = errorText;
                     }
                     return res.status(429).render('error', {
+                        statusCode: 429,
                         title: 'Rate Limit Cooling Active',
                         message: errorText
                     });
@@ -101,6 +102,7 @@ class CoolingRateLimiter {
                     req.session.errorMsg = errorText;
                 }
                 return res.status(429).render('error', {
+                    statusCode: 429,
                     title: 'Rate Limit Cooling Active',
                     message: errorText
                 });
